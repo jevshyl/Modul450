@@ -83,10 +83,10 @@ A.
 **Account.java**
 
 
-deposit(double amount)
+- deposit(double amount)
 :
-Positiver Betrag erhöht balance korrekt.
-Test mit 0.0 und negativen Zahlen (sollte Exception werfen / abgelehnt werden).
+   - Positiver Betrag erhöht balance korrekt.
+   - Test mit 0.0 und negativen Zahlen (sollte Exception werfen / abgelehnt werden).
 
 
 withdraw(double amount)

@@ -74,3 +74,9 @@
 | **BB-16** | Beenden                | Eingabe `q`                                                                 | Meldung `"Auf Wiedersehen!"` wird gedruckt und die Anwendung beendet sich.                                            |
 
 
+
+### 2. White-Box Testfälle (Code- & Unit-Tests):
+
+
+### 3. Verbesserungsvorschläge :
+

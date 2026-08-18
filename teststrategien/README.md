@@ -78,6 +78,63 @@
 
 ### 2. White-Box Testfälle (Code- & Unit-Tests):
 
+A. 
+
+**Account.java**
+
+
+deposit(double amount)
+:
+Positiver Betrag erhöht balance korrekt.
+Test mit 0.0 und negativen Zahlen (sollte Exception werfen / abgelehnt werden).
+
+
+withdraw(double amount)
+:
+Pfad 1 (amount <= balance): Gibt true zurück, balance wird reduziert.
+Pfad 2 (amount > balance): Gibt false zurück, balance bleibt unverändert.
+Äquivalenzklassen / Grenzen: amount == balance (Exakter Kontostand), amount = balance + 0.01 (1 Cent zu viel).
+B. 
+
+**Bank.java**
+
+
+createAccount(String name, Currency currency, double startBalance)
+:
+Fügt der internen Liste accounts ein neues Konto hinzu und erhöht getNumberOfAccounts().
+
+
+getAccount(int nr)
+:
+Gültige ID liefert das passende Account-Objekt zurück.
+Nicht existierende ID liefert null zurück.
+
+
+deleteAccount(Account a)
+:
+Entfernt das Objekt erfolgreich aus der Liste accounts.
+C. 
+
+**Counter.java**
+
+
+convertCurrency(...)
+:
+Umrechnung USD -> CHF: prüft Multiplikation mit 1.11.
+Umrechnung USD -> EUR: prüft Multiplikation mit 0.91.
+Umrechnung CHF -> USD: prüft Multiplikation mit 0.90.
+Unbekannte/nicht unterstützte Kombination (z.B. EUR -> CHF): gibt den Betrag unverändert zurück und druckt eine Warnung.
+D. 
+
+ExchangeRateOkhttp.java
+
+
+getExchangeRate(String currencyFrom, String currencyTo)
+:
+Mocking der HTTP-Antwort (z. B. mit Mockito oder MockWebServer) zur Überprüfung des JSON-Parsings via Gson.
+
+
+
 
 ### 3. Verbesserungsvorschläge :
 

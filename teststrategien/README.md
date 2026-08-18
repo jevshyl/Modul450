@@ -78,63 +78,36 @@
 
 ### 2. White-Box Testfälle (Code- & Unit-Tests):
 
-A. 
+White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Ausnahmebedingungen auf Klassenebene (z. B. mit **JUnit**).
 
-**Account.java**
+#### A. [Account.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java)
+- **[deposit(double amount)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java#L40-L42)**:
+  - Positiver Betrag erhöht `balance` korrekt.
+  - Test mit `0.0` und negativen Zahlen (sollte Exception werfen / abgelehnt werden).
+- **[withdraw(double amount)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java#L49-L56)**:
+  - *Pfad 1 (`amount <= balance`)*: Gibt `true` zurück, `balance` wird reduziert.
+  - *Pfad 2 (`amount > balance`)*: Gibt `false` zurück, `balance` bleibt unverändert.
+  - *Äquivalenzklassen / Grenzen*: `amount == balance` (Exakter Kontostand), `amount = balance + 0.01` (1 Cent zu viel).
 
+#### B. [Bank.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java)
+- **[createAccount(String name, Currency currency, double startBalance)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java#L13-L17)**:
+  - Fügt der internen Liste `accounts` ein neues Konto hinzu und erhöht `getNumberOfAccounts()`.
+- **[getAccount(int nr)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java#L31-L42)**:
+  - Gültige ID liefert das passende `Account`-Objekt zurück.
+  - Nicht existierende ID liefert `null` zurück.
+- **[deleteAccount(Account a)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java#L23-L29)**:
+  - Entfernt das Objekt erfolgreich aus der Liste `accounts`.
 
-- deposit(double amount)
-:
-   - Positiver Betrag erhöht balance korrekt.
-   - Test mit 0.0 und negativen Zahlen (sollte Exception werfen / abgelehnt werden).
+#### C. [Counter.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Counter.java)
+- **[convertCurrency(...)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Counter.java#L241-L261)**:
+  - Umrechnung `USD -> CHF`: prüft Multiplikation mit `1.11`.
+  - Umrechnung `USD -> EUR`: prüft Multiplikation mit `0.91`.
+  - Umrechnung `CHF -> USD`: prüft Multiplikation mit `0.90`.
+  - Unbekannte/nicht unterstützte Kombination (z.B. `EUR -> CHF`): gibt den Betrag unverändert zurück und druckt eine Warnung.
 
-
-withdraw(double amount)
-:
-Pfad 1 (amount <= balance): Gibt true zurück, balance wird reduziert.
-Pfad 2 (amount > balance): Gibt false zurück, balance bleibt unverändert.
-Äquivalenzklassen / Grenzen: amount == balance (Exakter Kontostand), amount = balance + 0.01 (1 Cent zu viel).
-B. 
-
-**Bank.java**
-
-
-createAccount(String name, Currency currency, double startBalance)
-:
-Fügt der internen Liste accounts ein neues Konto hinzu und erhöht getNumberOfAccounts().
-
-
-getAccount(int nr)
-:
-Gültige ID liefert das passende Account-Objekt zurück.
-Nicht existierende ID liefert null zurück.
-
-
-deleteAccount(Account a)
-:
-Entfernt das Objekt erfolgreich aus der Liste accounts.
-C. 
-
-**Counter.java**
-
-
-convertCurrency(...)
-:
-Umrechnung USD -> CHF: prüft Multiplikation mit 1.11.
-Umrechnung USD -> EUR: prüft Multiplikation mit 0.91.
-Umrechnung CHF -> USD: prüft Multiplikation mit 0.90.
-Unbekannte/nicht unterstützte Kombination (z.B. EUR -> CHF): gibt den Betrag unverändert zurück und druckt eine Warnung.
-D. 
-
-ExchangeRateOkhttp.java
-
-
-getExchangeRate(String currencyFrom, String currencyTo)
-:
-Mocking der HTTP-Antwort (z. B. mit Mockito oder MockWebServer) zur Überprüfung des JSON-Parsings via Gson.
-
-
-
+#### D. [ExchangeRateOkhttp.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/ExchangeRateOkhttp.java)
+- **[getExchangeRate(String currencyFrom, String currencyTo)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/ExchangeRateOkhttp.java#L23-L42)**:
+  - Mocking der HTTP-Antwort (z. B. mit Mockito oder MockWebServer) zur Überprüfung des JSON-Parsings via `Gson`.
 
 ### 3. Verbesserungsvorschläge :
 

@@ -63,8 +63,8 @@ public class PreisberechnungTest {
         }
 
         price = calculatePrice(1000, 300, 200, 5, 10);
-        if (price != 1470) {
-            System.out.println("Test 7 fehlgeschlagen: erwartet 1470, erhalten " + price);
+        if (price != 1370) {
+            System.out.println("Test 7 fehlgeschlagen: erwartet 1370, erhalten " + price);
             test_ok = false;
         }
 

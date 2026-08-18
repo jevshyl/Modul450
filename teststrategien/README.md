@@ -109,5 +109,17 @@ White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Au
 - **[getExchangeRate(String currencyFrom, String currencyTo)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/ExchangeRateOkhttp.java#L23-L42)**:
   - Mocking der HTTP-Antwort (z. B. mit Mockito oder MockWebServer) zur Überprüfung des JSON-Parsings via `Gson`.
 
+| **Methode / Code-Stelle** | **Testfall (White-Box)** | **Erwartetes Code-Verhalten** | **Reales Code-Verhalten** | **White-Box Ergebnis** |
+|---|---|---|---|---|
+| **Account.deposit(amount)** | `amount = 100.0` | `balance` erhöht sich um 100. | `balance` wird um 100 erhöht. | **PASSED** |
+| **Account.deposit(amount)** | `amount = -50.0` | `IllegalArgumentException` werfen. | `balance` sinkt um 50 (negativer Wert wird addiert). | **FAILED** (Bug in Validierung) |
+| **Account.withdraw(amount)** | `amount <= balance` | Methode gibt `true` zurück, `balance` sinkt. | Gibt `true` zurück, `balance` sinkt korrekt. | **PASSED** |
+| **Account.withdraw(amount)** | `amount > balance` | Methode gibt `false` zurück, `balance` bleibt. | Gibt `false` zurück, `balance` bleibt unverändert. | **PASSED** |
+| **Bank.getAccount(nr)** | Existierende ID (z. B. `1`) | Gibt passendes `Account`-Objekt zurück. | Objekt mit ID 1 wird zurückgegeben. | **PASSED** |
+| **Bank.getAccount(nr)** | Nicht-existierende ID (`99`) | Gibt `null` zurück. | Schleife läuft durch und gibt `null` zurück. | **PASSED** |
+| **Counter.convertCurrency(...)** | `USD → CHF` | Betrag × 1.11 zurückgeben. | Berechnet `amount * 1.11`. | **PASSED** |
+
+  
+
 ### 3. Verbesserungsvorschläge :
 

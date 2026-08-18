@@ -49,4 +49,28 @@
 | 4  | Altersgruppe „21–24“ statt „27+“ auswählen, restliche Angaben gültig lassen und „Reservieren“ klicken                                                                                             | Fahrzeugliste bzw. Preisübersicht zeigt einen Jungfahrer-Zuschlag an bzw. schränkt bestimmte Fahrzeugklassen für diese Altersgruppe ein |                     |        |                  |
 | 5  | Im Feld „CDP-Nummer eingeben“ bzw. „Promotions-Code eingeben“ einen offensichtlich ungültigen Code eintragen und „Anwenden“ klicken                                                               | Fehlermeldung „Code ungültig“ (o. Ä.) erscheint; es wird kein Rabatt auf den angezeigten Preis angewendet                               |                     |        |                  |
 
+---
+## Übung 3:
+
+### 1. Black-Box Testfälle (System- & Benutzertests)
+
+| **ID**    | **Testbereich**        | **Testfall / Input**                                                        | **Erwartetes Verhalten**                                                                                              |
+| --------- | ---------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **BB-01** | Kontoauswahl           | Eingabe einer gültigen Kontonummer (z. B. `1`)                              | Details von Konto 1 werden angezeigt, Wechsel in das Konto-Aktionsmenü.                                               |
+| **BB-02** | Kontoauswahl           | Eingabe einer ungültigen/nicht existierenden Nummer (z. B. `999` oder `-5`) | Fehlermeldung `"Ein Konto mit dieser Nummer ist nicht vorhanden!"`, erneute Menüaufforderung.                         |
+| **BB-03** | Kontoauswahl           | Ungültige Zeicheneingabe (z. B. `xyz` oder Sonderzeichen)                   | Meldung `"! Ungültige Eingabe..."` und erneute Eingabeaufforderung.                                                   |
+| **BB-04** | Kontoliste             | Eingabe `a` im Hauptmenü                                                    | Übersicht aller existierenden Konten mit Nummer, Name und Währung wird ausgegeben.                                    |
+| **BB-05** | Konto erstellen        | Eingabe `e`, Name: `"Müller"`, Währung: `"CHF"`                             | Neues Konto wird erstellt (Startguthaben `0.00 CHF`), neue ID zugewiesen, Details werden ausgegeben.                  |
+| **BB-06** | Konto erstellen        | Ungültiges Währungskürzel (z. B. `"JPY"` oder `"123"`)                      | Fallback-Verhalten: Warnung `"Währung nicht bekannt, es wird USD verwendet"` oder Fehlermeldung bei Formatabweichung. |
+| **BB-07** | Einzahlung             | Betrag einzahlen: `150.50`                                                  | Kontostand erhöht sich um `150.50`, neuer Kontostand wird angezeigt.                                                  |
+| **BB-08** | Einzahlung (Grenzfall) | Betrag einzahlen: `-50.00` oder `0.00`                                      | **Sicherheitslücke/Bug:** Applikation sollte negative Einzahlungen abweisen.                                          |
+| **BB-09** | Abhebung               | Betrag abheben: `50.00` (bei ausreichendem Guthaben)                        | Guthaben verringert sich um `50.00`, neuer Stand wird angezeigt.                                                      |
+| **BB-10** | Abhebung (Überziehung) | Betrag abheben, der das Guthaben übersteigt (z. B. `99999.00`)              | Fehlermeldung `"! Kontostand zu niedrig..."`, Kontostand bleibt unverändert.                                          |
+| **BB-11** | Überweisung            | Überweisung auf anderes Konto (gleiche Währung)                             | Guthaben auf Quellkonto sinkt, Zielkonto-Guthaben steigt um den gleichen Betrag.                                      |
+| **BB-12** | Überweisung            | Überweisung auf ein Konto mit anderer Währung (z. B. USD → CHF)             | Betrag wird mit Umrechnungskurs umgerechnet und dem Zielkonto gutgeschrieben.                                         |
+| **BB-13** | Überweisung (Selbst)   | Überweisung auf die eigene Kontonummer                                      | Fehlermeldung `"! Bitte ein anderes Konto als das momentane Konto auswählen!"`.                                       |
+| **BB-14** | Konto löschen          | Eingabe `l`, Bestätigung mit `j`                                            | Konto wird gelöscht. In der Kontoliste (`a`) ist es nicht mehr enthalten.                                             |
+| **BB-15** | Wechselkurs-Abfrage    | Eingabe `w`, Währungspaar `"CHF EUR"`                                       | Live-Wechselkurs wird abgerufen und ausgegeben (z. B. `1 CHF = 1.04 EUR`).                                            |
+| **BB-16** | Beenden                | Eingabe `q`                                                                 | Meldung `"Auf Wiedersehen!"` wird gedruckt und die Anwendung beendet sich.                                            |
+
 

@@ -105,4 +105,31 @@ Testing types, techniques and tactics
 
 ## Aufgaben Teil 2
 
+### Aufgabe 1
 
+
+### Aufgabe 2
+
+
+#### JUnit Features
+
+- @Test
+  - Markiert Methode als Test
+- @BeforeEach/AfterEach
+  - Wird vor/nach jedem Test ausgeführt
+  - Zum Beispiel:
+    - Test-DB reset
+- @BeforeAll/@AfterAll
+  - Wird vor/nach allen Tests ausgeführt
+  - Beispiele:
+    - DB-Verbindung aufbauen
+    - Grosse Testdaten Laden
+- @DisplayName
+  - Definiert Namen des Tests
+- @RepeatedTest
+  - Wiederholender Test
+  - Beispiele:
+    - Stabilität testen
+
+
+[Nützliche Seite](https://www.softwaretestinghelp.com/junit-annotations-tutorial/)

@@ -1,4 +1,4 @@
-package Grundlagen.A3;
+package Grundlagen;
 
 public class PreisberechnungTest {
 

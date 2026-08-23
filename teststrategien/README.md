@@ -50,6 +50,45 @@
 | 5  | Im Feld „CDP-Nummer eingeben“ bzw. „Promotions-Code eingeben“ einen offensichtlich ungültigen Code eintragen und „Anwenden“ klicken                                                               | Fehlermeldung „Code ungültig“ (o. Ä.) erscheint; es wird kein Rabatt auf den angezeigten Preis angewendet                               |                     |        |                  |
 
 ---
+
+# Funktionale Black-Box Testfälle – Hertz Mietwagen Schweiz
+
+**Plattform:** [https://www.hertz.de/p/mietwagen/schweiz](https://www.hertz.de/p/mietwagen/schweiz)  
+**Erstellt am:** 23.08.2026  
+**Modul:** M450 – Testing
+
+---
+
+## Übersicht
+
+Die folgenden 5 funktionalen Black-Box Testfälle decken die wichtigsten Benutzerfunktionen der Hertz Mietwagen-Plattform für die Schweiz ab. Bei Black-Box Tests wird die interne Implementierung nicht betrachtet – getestet wird ausschliesslich das beobachtbare Verhalten aus Sicht des Benutzers (Eingabe → erwartete Ausgabe).
+
+---
+
+## Testfälle
+
+| ID | Beschreibung | Erwartetes Resultat | Effektives Resultat | Status | Mögliche Ursache |
+|----|-------------|-------------------|-------------------|--------|-----------------|
+| 1 | **Seite korrekt laden:** Die URL `https://www.hertz.de/p/mietwagen/schweiz` wird im Browser aufgerufen. | Die Seite lädt vollständig: Das Hertz-Logo, die Navigation (Buchen, Manage, Angebote, Standorte, Support, Geschäftlich, Hertz Gold+), das Hero-Banner „Mietwagen Schweiz", das Buchungswidget mit Eingabefeldern und die Städte-/Flughafen-Karten werden korrekt angezeigt. Ladezeit unter 5 Sekunden. | *Offen – noch nicht getestet* | ⬜ Offen | CDN-Server nicht erreichbar; CSS/JS-Dateien blockiert; DNS-Auflösung fehlgeschlagen |
+| 2 | **Fahrzeugreservierung mit gültigen Daten durchführen:** Im Buchungswidget wird „Zürich Flughafen" als Abholort eingegeben, ein Abholdatum 7 Tage in der Zukunft mit Uhrzeit 10:00, ein Rückgabedatum 10 Tage in der Zukunft mit Uhrzeit 14:00 und Alter „27+" ausgewählt. Anschliessend wird der Button „Reservieren" geklickt. | Das System leitet den Benutzer zur Fahrzeugauswahl-Seite weiter (`hertz.de/rentacar/reservation/...`). Es werden verfügbare Fahrzeugkategorien mit Preisen für den gewählten Zeitraum in der Schweiz angezeigt. Keine Fehlermeldung erscheint. | *Offen – noch nicht getestet* | ⬜ Offen | API-Backend (Reservierungssystem) nicht erreichbar; Autocomplete-Service für Standorte defekt; Session-/Cookie-Probleme |
+| 3 | **Validierung bei fehlenden Pflichtfeldern:** Im Buchungswidget wird der Button „Reservieren" geklickt, ohne einen Abholort einzugeben (alle anderen Felder bleiben auf Standardwerten). | Eine Fehlermeldung wird angezeigt, z. B. „Bitte wählen Sie eine Anmietstation". Die Seite bleibt auf dem Buchungsformular, es erfolgt keine Weiterleitung. Das fehlende Feld wird visuell hervorgehoben (z. B. roter Rahmen). | *Offen – noch nicht getestet* | ⬜ Offen | Client-seitige Validierung deaktiviert; JavaScript-Fehler verhindert Validierungslogik; Fehlermeldungs-Label nicht korrekt lokalisiert |
+| 4 | **Standort-Navigation – Stadt in der Schweiz auswählen:** In der Sektion „Grossstädte in Schweiz" wird auf die Karte „Basel" geklickt. | Die Seite navigiert korrekt zur URL `/p/mietwagen/schweiz/basel`. Die Basel-Seite wird geladen mit stadttspezifischen Informationen, einem Hero-Banner für Basel und einem Buchungswidget. Der Breadcrumb zeigt: Hauptseite > Mietwagen > Schweiz > Basel. | *Offen – noch nicht getestet* | ⬜ Offen | Broken Link (404-Fehler); Routing-Fehler im CMS; Bild-Assets für Basel nicht verfügbar |
+| 5 | **Abweichenden Rückgabeort aktivieren und korrekt nutzen:** Im Buchungswidget wird die Checkbox „Anderer Abgabeort" aktiviert. | Es erscheint ein zusätzliches Eingabefeld „Ort der Rückgabestation". In dieses Feld kann ein anderer Standort (z. B. „Genf Flughafen") eingegeben werden, und der Autocomplete schlägt passende Schweizer Hertz-Standorte vor. Bei der Reservierung werden Abhol- und Rückgabeort getrennt an das Backend übermittelt. | *Offen – noch nicht getestet* | ⬜ Offen | Checkbox-Event-Listener nicht gebunden; CSS-Klasse `d-none` wird nicht korrekt entfernt; Einwegmiete in der Schweiz nicht unterstützt |
+
+---
+
+## Legende
+
+| Status | Bedeutung |
+|--------|-----------|
+| ⬜ Offen | Test noch nicht durchgeführt |
+| ✅ Bestanden | Effektives Resultat entspricht dem erwarteten Resultat |
+| ❌ Fehler | Abweichung zwischen erwartetem und effektivem Resultat |
+| ⚠️ Teilweise | Teilweise bestanden, mit Einschränkungen |
+
+
+
+---
 ## Übung 3:
 
 ### 1. Black-Box Testfälle (System- & Benutzertests)

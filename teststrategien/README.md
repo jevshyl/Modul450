@@ -43,41 +43,11 @@
 
 | ID | Beschreibung                                                                                                                                                                                      | Erwartetes Resultat                                                                                                                     | Effektives Resultat | Status | Mögliche Ursache |
 | -- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------ | ---------------- |
-| 1  | Buchungsformular mit gültigen Daten ausfüllen: Mietstation „Zürich Flughafen“, Rückgabestation identisch, Abholdatum morgen , Rückgabedatum übermorgen +, Alter „25+“, dann „Reservieren“ klicken | Weiterleitung zur Fahrzeugübersicht mit verfügbaren Fahrzeugen und Preisen für den gewählten Zeitraum                                   |                     |Erfolg        |                  |
-| 2  | Rückgabedatum vor dem Abholdatum wählen (z. B. Abholdatum übermorgen, Rückgabedatum morgen ) und „Reservieren“ klicken                                                                          | Aboldatum input wird geleert,, Fehler Meldung wird angezeigt Formular wird nicht abgeschickt ,                                            |                     |        |                  |
-| 3  | Checkbox „Anderer Abgabeort“ aktivieren, als Abholort „Zürich-Hauptbahnhof“ und als Rückgabeort „Zürich Flughafen“ wählen                                                                         | Buchung wird als Einwegmiete akzeptiert; auf der Ergebnisseite/Preisübersicht wird ein Hinweis auf die Einweggebühr angezeigt           |                     |        |                  |
-| 4  | Altersgruppe „21–24“ statt „27+“ auswählen, restliche Angaben gültig lassen und „Reservieren“ klicken                                                                                             | Fahrzeugliste bzw. Preisübersicht zeigt einen Jungfahrer-Zuschlag an bzw. schränkt bestimmte Fahrzeugklassen für diese Altersgruppe ein |                     |        |                  |
-| 5  | Im Feld „CDP-Nummer eingeben“ bzw. „Promotions-Code eingeben“ einen offensichtlich ungültigen Code eintragen und „Anwenden“ klicken                                                               | Fehlermeldung „Code ungültig“ (o. Ä.) erscheint; es wird kein Rabatt auf den angezeigten Preis angewendet                               |                     |        |                  |
-
----
-
-# Funktionale Black-Box Testfälle – Hertz Mietwagen Schweiz
-
-**Plattform:** [https://www.hertz.de/p/mietwagen/schweiz](https://www.hertz.de/p/mietwagen/schweiz)  
-**Erstellt am:** 23.08.2026  
-**Modul:** M450 – Testing
-
----
-
-## Übersicht
-
-Die folgenden 5 funktionalen Black-Box Testfälle decken die wichtigsten Benutzerfunktionen der Hertz Mietwagen-Plattform für die Schweiz ab. Bei Black-Box Tests wird die interne Implementierung nicht betrachtet – getestet wird ausschliesslich das beobachtbare Verhalten aus Sicht des Benutzers (Eingabe → erwartete Ausgabe).
-
----
-
-
----
-
-## Legende
-
-| Status | Bedeutung |
-|--------|-----------|
-| ⬜ Offen | Test noch nicht durchgeführt |
-| ✅ Bestanden | Effektives Resultat entspricht dem erwarteten Resultat |
-| ❌ Fehler | Abweichung zwischen erwartetem und effektivem Resultat |
-| ⚠️ Teilweise | Teilweise bestanden, mit Einschränkungen |
-
-
+| 1  | Buchungsformular mit gültigen Daten ausfüllen: Mietstation „Zürich Flughafen“, Rückgabestation identisch, Abholdatum morgen , Rückgabedatum übermorgen +, Alter „25+“, dann „Reservieren“ klicken | Weiterleitung zur Fahrzeugübersicht mit verfügbaren Fahrzeugen und Preisen für den gewählten Zeitraum                                   |                     |Bestanden        |                  |
+| 2  | Rückgabedatum vor dem Abholdatum wählen (z. B. Abholdatum übermorgen, Rückgabedatum morgen ) und „Reservieren“ klicken                                                                          | Aboldatum input wird geleert,, Fehler Meldung wird angezeigt Formular wird nicht abgeschickt ,                                            |                     |  Bestanden        |                  |
+| 3  | Checkbox „Anderer Abgabeort“ aktivieren, als Abholort „Zürich-Hauptbahnhof“ und als Rückgabeort „Zürich Flughafen“ wählen                                                                         | Buchung wird als Einwegmiete akzeptiert; auf der Ergebnisseite/Preisübersicht wird ein Hinweis auf die Einweggebühr angezeigt           |                     |Bestanden          |                  |
+| 4  | Altersgruppe „21–24“ statt „27+“ auswählen, restliche Angaben gültig lassen und „Reservieren“ klicken                                                                                             | Fahrzeugliste bzw. Preisübersicht zeigt einen Jungfahrer-Zuschlag an bzw. schränkt bestimmte Fahrzeugklassen für diese Altersgruppe ein |                     |  Bestanden        |                  |
+| 4 | **Ungültiger Ort (Autocomplete):** Eingabe eines nicht existierenden Ortes (z. B. "XYZ123") im Abholort-Feld. | Das Autocomplete-Menü zeigt "Keine Ergebnisse gefunden" an. Der Ort kann nicht ausgewählt werden, das Suchfeld bleibt leer oder markiert den Fehler. | Keine Reservierung möglich, Feld zeigt "This Field is required". |  Bestanden | - |
 
 ---
 ## Übung 3:

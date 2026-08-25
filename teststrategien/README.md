@@ -123,77 +123,6 @@ White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Au
 | **Bank.getAccount(nr)** | Nicht-existierende ID (`99`) | Gibt `null` zurück. | Schleife läuft durch und gibt `null` zurück. | **PASSED** |
 | **Counter.convertCurrency(...)** | `USD → CHF` | Betrag × 1.11 zurückgeben. | Berechnet `amount * 1.11`. | **PASSED** |
 
-  
-
-### 3. Verbesserungsvorschläge :
-
-Used tool: manage_task
-Used tool: manage_task
-Listed directory Java
-Ran command: `$env:JAVA_HOME="C:\Program Files\Java\jdk-25"; mvn compile`
-
-Basierend auf der Analyse des Quellcodes der Bank-Software ([Main.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Main.java), [Bank.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java), [Account.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java), [Counter.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Counter.java) und [ExchangeRateOkhttp.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/ExchangeRateOkhttp.java)) ist hier die detaillierte Zusammenstellung von Testfällen und Verbesserungsvorschlägen.
-
----
-
-### 1. Black-Box Testfälle (System- & Benutzertests)
-
-Black-Box-Tests überprüfen die Funktionalität aus der Sicht des Endbenutzers über die Konsolen-Schnittstelle, ohne Kenntnis des inneren Codes.
-
-| ID | Testbereich | Testfall / Input | Erwartetes Verhalten |
-|---|---|---|---|
-| **BB-01** | Kontoauswahl | Eingabe einer gültigen Kontonummer (z. B. `1`) | Details von Konto 1 werden angezeigt, Wechsel in das Konto-Aktionsmenü. |
-| **BB-02** | Kontoauswahl | Eingabe einer ungültigen/nicht existierenden Nummer (z. B. `999` oder `-5`) | Fehlermeldung `"Ein Konto mit dieser Nummer ist nicht vorhanden!"`, erneute Menüaufforderung. |
-| **BB-03** | Kontoauswahl | Ungültige Zeicheneingabe (z. B. `xyz` oder Sonderzeichen) | Meldung `"! Ungültige Eingabe..."` und erneute Eingabeaufforderung. |
-| **BB-04** | Kontoliste | Eingabe `a` im Hauptmenü | Übersicht aller existierenden Konten mit Nummer, Name und Währung wird ausgegeben. |
-| **BB-05** | Konto erstellen | Eingabe `e`, Name: `"Müller"`, Währung: `"CHF"` | Neues Konto wird erstellt (Startguthaben `0.00 CHF`), neue ID zugewiesen, Details werden ausgegeben. |
-| **BB-06** | Konto erstellen | Ungültiges Währungskürzel (z. B. `"JPY"` oder `"123"`) | Fallback-Verhalten: Warnung `"Währung nicht bekannt, es wird USD verwendet"` oder Fehlermeldung bei Formatabweichung. |
-| **BB-07** | Einzahlung | Betrag einzahlen: `150.50` | Kontostand erhöht sich um `150.50`, neuer Kontostand wird angezeigt. |
-| **BB-08** | Einzahlung (Grenzfall) | Betrag einzahlen: `-50.00` oder `0.00` | *Sicherheitslücke/Bug:* Applikation sollte negative Einzahlungen abweisen. |
-| **BB-09** | Abhebung | Betrag abheben: `50.00` (bei ausreichendem Guthaben) | Guthaben verringert sich um `50.00`, neuer Stand wird angezeigt. |
-| **BB-10** | Abhebung (Überziehung) | Betrag abheben, der das Guthaben übersteigt (z. B. `99999.00`) | Fehlermeldung `"! Kontostand zu niedrig..."`, Kontostand bleibt unverändert. |
-| **BB-11** | Überweisung | Überweisung auf anderes Konto (gleiche Währung) | Guthaben auf Quellkonto sinkt, Zielkonto-Guthaben steigt um den gleichen Betrag. |
-| **BB-12** | Überweisung | Überweisung auf ein Konto mit anderer Währung (z. B. USD -> CHF) | Betrag wird mit Umrechnungskurs umgerechnet und dem Zielkonto gutgeschrieben. |
-| **BB-13** | Überweisung (Selbst) | Überweisung auf die eigene Kontonummer | Fehlermeldung `"! Bitte ein anderes Konto als das momentane Konto auswählen!"`. |
-| **BB-14** | Konto löschen | Eingabe `l`, Bestätigung mit `j` | Konto wird gelöscht. In der Kontoliste (`a`) ist es nicht mehr enthalten. |
-| **BB-15** | Wechselkurs-Abfrage | Eingabe `w`, Währungspaar `"CHF EUR"` | Live-Wechselkurs wird abgerufen und ausgegeben (z.B. `1 CHF = 1.04 EUR`). |
-| **BB-16** | Beenden | Eingabe `q` | Meldung `"Auf Wiedersehen!"` wird gedruckt und die Anwendung beendet sich. |
-
----
-
-### 2. White-Box Testfälle (Code- & Unit-Tests)
-
-White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Ausnahmebedingungen auf Klassenebene (z. B. mit **JUnit**).
-
-#### A. [Account.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java)
-- **[deposit(double amount)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java#L40-L42)**:
-  - Positiver Betrag erhöht `balance` korrekt.
-  - Test mit `0.0` und negativen Zahlen (sollte Exception werfen / abgelehnt werden).
-- **[withdraw(double amount)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java#L49-L56)**:
-  - *Pfad 1 (`amount <= balance`)*: Gibt `true` zurück, `balance` wird reduziert.
-  - *Pfad 2 (`amount > balance`)*: Gibt `false` zurück, `balance` bleibt unverändert.
-  - *Äquivalenzklassen / Grenzen*: `amount == balance` (Exakter Kontostand), `amount = balance + 0.01` (1 Cent zu viel).
-
-#### B. [Bank.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java)
-- **[createAccount(String name, Currency currency, double startBalance)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java#L13-L17)**:
-  - Fügt der internen Liste `accounts` ein neues Konto hinzu und erhöht `getNumberOfAccounts()`.
-- **[getAccount(int nr)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java#L31-L42)**:
-  - Gültige ID liefert das passende `Account`-Objekt zurück.
-  - Nicht existierende ID liefert `null` zurück.
-- **[deleteAccount(Account a)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java#L23-L29)**:
-  - Entfernt das Objekt erfolgreich aus der Liste `accounts`.
-
-#### C. [Counter.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Counter.java)
-- **[convertCurrency(...)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Counter.java#L241-L261)**:
-  - Umrechnung `USD -> CHF`: prüft Multiplikation mit `1.11`.
-  - Umrechnung `USD -> EUR`: prüft Multiplikation mit `0.91`.
-  - Umrechnung `CHF -> USD`: prüft Multiplikation mit `0.90`.
-  - Unbekannte/nicht unterstützte Kombination (z.B. `EUR -> CHF`): gibt den Betrag unverändert zurück und druckt eine Warnung.
-
-#### D. [ExchangeRateOkhttp.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/ExchangeRateOkhttp.java)
-- **[getExchangeRate(String currencyFrom, String currencyTo)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/ExchangeRateOkhttp.java#L23-L42)**:
-  - Mocking der HTTP-Antwort (z. B. mit Mockito oder MockWebServer) zur Überprüfung des JSON-Parsings via `Gson`.
-
 ---
 
 ### 3. Verbesserungsvorschläge & Best Practices für den Code
@@ -226,5 +155,13 @@ White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Au
 7. **Hartcodierte & unvollständige Wechselkurse**:
    - In [Counter.convertCurrency]() sind fixe Raten hinterlegt, die unvollständig sind (z. B. fehlt `EUR -> CHF`).
    - **Empfehlung**: Währungsumrechnung an `ExchangeRateOkhttp` oder einen dedizierten `CurrencyConverterService` auslagern.
+
+8. **Hartcodierte & unvollständige Wechselkurse**:
+
+   -  Regex ohne Anker (^...$): Der Regex \d|a|e|w|q prüft mit matcher.find() nur, ob irgendwo im String ein gültiges Zeichen vorkommt. Deshalb wird a1, aw oder         qq fälschlicherweise akzeptiert.
+   -  substring(0,1) vor der Validierung: In Counter.java:105 wird der Input auf ein Zeichen gekürzt, bevor er validiert wird. Dadurch gehen zusätzliche         (ungültige) Zeichen einfach verloren, statt einen Fehler zu werfen.
+
+   - **Empfehlung**:Der Regex muss den gesamten String prüfen, nicht nur einen Teil davon. Dafür nutzen wir ^ (Anfang) und $ (Ende) und ersetzen find() durch matches():
+
 
 

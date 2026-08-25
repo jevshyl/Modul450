@@ -156,7 +156,7 @@ White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Au
    - In [Counter.convertCurrency]() sind fixe Raten hinterlegt, die unvollständig sind (z. B. fehlt `EUR -> CHF`).
    - **Empfehlung**: Währungsumrechnung an `ExchangeRateOkhttp` oder einen dedizierten `CurrencyConverterService` auslagern.
 
-8. **Hartcodierte & unvollständige Wechselkurse**:
+8. **Eingabevalidierung im Counter**:
 
    -  Regex ohne Anker (^...$): Der Regex \d|a|e|w|q prüft mit matcher.find() nur, ob irgendwo im String ein gültiges Zeichen vorkommt. Deshalb wird a1, aw oder         qq fälschlicherweise akzeptiert.
    -  substring(0,1) vor der Validierung: In Counter.java:105 wird der Input auf ein Zeichen gekürzt, bevor er validiert wird. Dadurch gehen zusätzliche         (ungültige) Zeichen einfach verloren, statt einen Fehler zu werfen.

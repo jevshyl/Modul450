@@ -149,11 +149,11 @@ White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Au
    - **Empfehlung**: Preconditions prüfen (`if (amount <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");`).
 
 6. **Globale/Statische Zustände (`static` Counter)**:
-   - `Account` nutzt `static int counter = 0;` für die ID-Generierung ([Account.java:L25]()).
+   - `Account` nutzt `static int counter = 0;` für die ID-Generierung `Account.java:L25`.
    - **Empfehlung**: IDs zentral durch die Klasse `Bank` verwalten lassen oder  `UUID` nutzen.
 
 7. **Hartcodierte & unvollständige Wechselkurse**:
-   - In [Counter.convertCurrency]() sind fixe Raten hinterlegt, die unvollständig sind (z. B. fehlt `EUR -> CHF`).
+   - In `Counter.convertCurrency` sind fixe Raten hinterlegt, die unvollständig sind (z. B. fehlt `EUR -> CHF`).
    - **Empfehlung**: Währungsumrechnung an `ExchangeRateOkhttp` oder einen dedizierten `CurrencyConverterService` auslagern.
 
 8. **Eingabevalidierung im Counter**:

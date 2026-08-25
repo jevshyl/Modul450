@@ -84,13 +84,13 @@
 
 White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Ausnahmebedingungen auf Klassenebene (z. B. mit **JUnit**).
 
-#### A. [Account.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java)
-- **[deposit(double amount)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java#L40-L42)**:
+#### A. [Account.java](M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java)
+- **[deposit(double amount)](M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java#L40-L42)**:
   - Positiver Betrag erhöht `balance` korrekt.
   - Test mit `0.0` und negativen Zahlen (sollte Exception werfen / abgelehnt werden).
-- **[withdraw(double amount)](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java#L49-L56)**:
-  - *Pfad 1 (`amount <= balance`)*: Gibt `true` zurück, `balance` wird reduziert.
-  - *Pfad 2 (`amount > balance`)*: Gibt `false` zurück, `balance` bleibt unverändert.
+- **[withdraw(double amount)](M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Account.java#L49-L56)**:
+  - *(`amount <= balance`)*: Gibt `true` zurück, `balance` wird reduziert.
+  - *(`amount > balance`)*: Gibt `false` zurück, `balance` bleibt unverändert.
   - *Äquivalenzklassen / Grenzen*: `amount == balance` (Exakter Kontostand), `amount = balance + 0.01` (1 Cent zu viel).
 
 #### B. [Bank.java](file:///c:/Users/Amiri/Documents/M450/bank-software-mvn/src/main/java/ch/tbz/bank/software/Bank.java)

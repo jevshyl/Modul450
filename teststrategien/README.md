@@ -196,15 +196,15 @@ White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Au
 
 1. **Keine Unit-Tests vorhanden**:
    - `src/test/java` ist derzeit komplett leer. 
-   - **Empfehlung**: JUnit 5 (`junit-jupiter`) in [pom.xml]() einbinden und automatische Unit-Tests für `Bank`, `Account` und `Counter` schreiben.
+   - **Empfehlung**: JUnit 5 (`junit-jupiter`) in `pom.xml` einbinden und automatische Unit-Tests für `Bank`, `Account` und `Counter` schreiben.
 
 2. **Hardcoded API-Key & Sicherheitsrisiko**:
-   - In [ExchangeRateOkhttp.java:L28]() ist ein klarlesbarer API-Key im Code hinterlegt (`"apikey", "aZA8SRPPWKe8RCu4fLT9dGtgAUfkwVfS"`).
+   - In `xchangeRateOkhttp.java:L28` ist ein klarlesbarer API-Key im Code hinterlegt (`"apikey", "aZA8SRPPWKe8RCu4fLT9dGtgAUfkwVfS"`).
    - **Empfehlung**: API-Keys niemals im Quellcode/Git speichern. Über Umgebungs-Variablen (`System.getenv("API_KEY")`) oder Konfigurationsdateien einlesen.
 
 3. **Verwendung von `double` für Geldbeträge**:
    - `double` führt bei kaufmännischen Berechnungen zu Rundungsfehlern (z.B. `0.1 + 0.2 != 0.3`).
-   - **Empfehlung**: Für Finanzanwendungen sollte stets `BigDecimal` oder long verwendet werden.
+   - **Empfehlung**: Für Finanzanwendungen sollte stets `BigDecimal` oder `Long` verwendet werden.
 
 4. **Kopplung von Geschäftslogik und UI / Trennung von Belangen (Separation of Concerns)**:
    - Methoden in `Account` und `Bank` rufen direkt `System.out.println()` auf.
@@ -216,7 +216,7 @@ White-Box-Tests testen gezielt einzelnen Code-Pfade, Methoden, Grenzwerte und Au
    - **Empfehlung**: Preconditions prüfen (`if (amount <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");`).
 
 6. **Globale/Statische Zustände (`static` Counter)**:
-   - `Account` nutzt `static int counter = 0;` für die ID-Generierung ([Account.java:L25]()). Das ist in mehrthreadigen Umgebungen nicht thread-sicher und macht das Zurücksetzen/Testen von Konten schwierig.
+   - `Account` nutzt `static int counter = 0;` für die ID-Generierung ([Account.java:L25]()).
    - **Empfehlung**: IDs zentral durch die Klasse `Bank` verwalten lassen oder  `UUID` nutzen.
 
 7. **Hartcodierte & unvollständige Wechselkurse**:

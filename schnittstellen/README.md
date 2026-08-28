@@ -5,13 +5,6 @@ import ch.tbz.m450.repository.Address;
 
 import java.util.Comparator;
 
-/**
- * Sortiert Adressen zuerst nach Nachname, dann nach Vorname (alphabetisch, A-Z).
- * Comparator.comparing + thenComparing erzeugt automatisch eine sichere,
- * lesbare Vergleichslogik ohne manuelles String.compareTo-Chaining.
- * nullsFirst schützt uns davor, dass eine NullPointerException geworfen wird,
- * falls firstname/lastname mal null sein sollte.
- */
 public class AddressComparator implements Comparator<Address> {
 
     @Override
@@ -34,12 +27,6 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Testet die Address-Entity selbst: Konstruktoren, Getter/Setter.
- * Das ist der einfachste Baustein der Anwendung, deshalb starten wir hier -
- * bevor wir Service/Controller testen, muss klar sein, dass das Datenobjekt
- * sich korrekt verhält.
- */
 class AddressTest {
 
     private Address address;
@@ -190,15 +177,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Testet AddressService komplett isoliert von Spring und von der echten
- * (H2-)Datenbank. Das AddressRepository wird mit Mockito als Mock ersetzt
- * (@Mock), d.h. es gibt keinen JPA-/H2-Zugriff mehr - wir testen nur die
- * Logik von AddressService selbst (save/getAll/getAddress + Sortierung).
- *
- * @ExtendWith(MockitoExtension.class) aktiviert die Mockito-Annotationen
- * (@Mock) fuer JUnit 5, ohne dass wir Mockito manuell initialisieren muessen.
- */
 @ExtendWith(MockitoExtension.class)
 class AddressServiceTest {
 
@@ -304,13 +282,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Testet nur die Controller-Schicht (HTTP-Mapping, Statuscodes, JSON).
- * Der AddressService wird gemockt - es findet also weder ein echter
- * Service-Aufruf noch ein Datenbankzugriff statt. MockMvc simuliert
- * HTTP-Requests, ohne dass ein echter Server gestartet werden muss
- * (standaloneSetup statt vollem Spring-Kontext -> schnelle, isolierte Tests).
- */
 @ExtendWith(MockitoExtension.class)
 class AddressControllerTest {
 

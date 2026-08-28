@@ -34,8 +34,6 @@ class AddressTest {
 
     @BeforeEach
     void setUp() {
-        // @BeforeEach sorgt dafuer, dass jeder Test mit einem frischen,
-        // unveraenderten Address-Objekt startet (keine Seiteneffekte zwischen Tests).
         registrationDate = new Date();
         address = new Address(1, "Max", "Muster", "0791234567", registrationDate);
     }
@@ -94,11 +92,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * Testet die Sortierlogik des AddressComparator isoliert - ohne Service,
- * ohne Repository, ohne Spring-Kontext. Das ist ein reiner Unit-Test.
- */
 class AddressComparatorTest {
 
     private AddressComparator comparator;
@@ -190,8 +183,6 @@ class AddressServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Service manuell mit dem gemockten Repository verdrahten (statt @InjectMocks,
-        // beides ist ok - hier explizit, damit der Konstruktor-Aufruf sichtbar bleibt).
         addressService = new AddressService(addressRepository);
 
         anna = new Address(1, "Anna", "Anderegg", "079", new Date());

@@ -1,4 +1,6 @@
 ## Ünung1:
+
+![](coverage.png)
 ### AddressComarator Korrektur:
 ```java
 import ch.tbz.m450.repository.Address;
@@ -346,4 +348,287 @@ class AddressControllerTest {
     }
 }
 ```
+## Übung 2:
+![](test-comparator.png)
+### ### AddressComparator:
+
+```java
+package ch.tbz.m450.util;
+
+import ch.tbz.m450.repository.Address;
+
+import java.util.Comparator;
+import java.util.Date;
+
+/**
+ * Vergleicht zwei Address-Objekte.
+ *
+ * Standardmaessig wird nach Nachname, dann Vorname sortiert (wie bisher) -
+ * das bleibt kompatibel zu allen Stellen, die "new AddressComparator()"
+ * ohne Argumente aufrufen (z.B. AddressService.getAll()).
+ *
+ * Zusaetzlich kann man beliebige weitere Attribute als Sortierkriterien
+ * angeben, in der gewuenschten Prioritaet - z.B.
+ *   new AddressComparator(SortField.ID)
+ *   new AddressComparator(SortField.REGISTRATION_DATE, SortField.LASTNAME)
+ */
+public class AddressComparator implements Comparator<Address> {
+
+    /**
+     * Alle Attribute von Address, nach denen sortiert werden kann.
+     */
+    public enum SortField {
+        ID,
+        FIRSTNAME,
+        LASTNAME,
+        PHONENUMBER,
+        REGISTRATION_DATE
+    }
+
+    private final Comparator<Address> comparator;
+
+    /**
+     * Standard-Sortierung: Nachname, dann Vorname (bisheriges Verhalten).
+     */
+    public AddressComparator() {
+        this(SortField.LASTNAME, SortField.FIRSTNAME);
+    }
+
+    /**
+     * Erlaubt es, ein oder mehrere Sortierkriterien in der gewuenschten
+     * Reihenfolge (Prioritaet) zu uebergeben. Das erste Feld ist das
+     * Hauptkriterium, jedes weitere wird als Tie-Breaker verwendet
+     * (via thenComparing), falls die vorherigen Felder gleich sind.
+     *
+     * @param fields mindestens ein SortField
+     */
+    public AddressComparator(SortField... fields) {
+        if (fields == null || fields.length == 0) {
+            throw new IllegalArgumentException("Es muss mindestens ein SortField angegeben werden");
+        }
+
+        Comparator<Address> result = toComparator(fields[0]);
+        for (int i = 1; i < fields.length; i++) {
+            result = result.thenComparing(toComparator(fields[i]));
+        }
+        this.comparator = result;
+    }
+
+    /**
+     * Wandelt ein einzelnes SortField in den passenden Feld-Comparator um.
+     * nullsFirst() verhindert NullPointerExceptions, falls ein Attribut
+     * (z.B. phonenumber oder registrationDate) mal nicht gesetzt ist.
+     */
+    private Comparator<Address> toComparator(SortField field) {
+        return switch (field) {
+            case ID -> Comparator.comparingInt(Address::getId);
+            case FIRSTNAME -> Comparator.comparing(
+                    Address::getFirstname, Comparator.nullsFirst(String::compareToIgnoreCase));
+            case LASTNAME -> Comparator.comparing(
+                    Address::getLastname, Comparator.nullsFirst(String::compareToIgnoreCase));
+            case PHONENUMBER -> Comparator.comparing(
+                    Address::getPhonenumber, Comparator.nullsFirst(String::compareToIgnoreCase));
+            case REGISTRATION_DATE -> Comparator.comparing(
+                    Address::getRegistrationDate, Comparator.nullsFirst(Date::compareTo));
+        };
+    }
+
+    @Override
+    public int compare(Address a1, Address a2) {
+        return comparator.compare(a1, a2);
+    }
+}
+```
+### AddressComparator Test:
+
+```java
+package ch.tbz.m450.util;
+
+import ch.tbz.m450.repository.Address;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Testet die Sortierlogik des AddressComparator isoliert - ohne Service,
+ * ohne Repository, ohne Spring-Kontext. Das ist ein reiner Unit-Test.
+ */
+class AddressComparatorTest {
+
+    private AddressComparator comparator;
+    private Address anna;
+    private Address bernd;
+    private Address annaZweite; // gleicher Nachname wie "anna" -> testet thenComparing
+
+    private static Date date(int year, int month, int day) {
+        return Date.from(LocalDate.of(year, month, day).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    @BeforeEach
+    void setUp() {
+        comparator = new AddressComparator();
+        anna = new Address(1, "Anna", "Anderegg", "079", date(2020, 5, 1));
+        bernd = new Address(2, "Bernd", "Berger", "078", date(2019, 3, 15));
+        annaZweite = new Address(3, "Zoe", "Anderegg", "077", date(2021, 1, 10));
+    }
+
+    @Nested
+    @DisplayName("Standard-Sortierung (Nachname, Vorname) - bisheriges Verhalten")
+    class DefaultSorting {
+
+        @Test
+        @DisplayName("Adresse mit fruehstem Nachnamen kommt zuerst")
+        void compare_sortsByLastnameAscending() {
+            assertTrue(comparator.compare(anna, bernd) < 0, "Anderegg sollte vor Berger stehen");
+            assertTrue(comparator.compare(bernd, anna) > 0, "Berger sollte nach Anderegg stehen");
+        }
+
+        @Test
+        @DisplayName("Gleicher Nachname wird zusaetzlich nach Vorname sortiert")
+        void compare_sameLastname_sortsByFirstname() {
+            assertTrue(comparator.compare(anna, annaZweite) < 0);
+            assertTrue(comparator.compare(annaZweite, anna) > 0);
+        }
+
+        @Test
+        @DisplayName("Identische Adresse ergibt 0")
+        void compare_sameAddress_returnsZero() {
+            assertEquals(0, comparator.compare(anna, anna));
+        }
+
+        @Test
+        @DisplayName("Sortieren einer Liste ergibt die erwartete Reihenfolge")
+        void sortList_producesExpectedOrder() {
+            List<Address> addresses = new ArrayList<>(List.of(bernd, annaZweite, anna));
+
+            addresses.sort(comparator);
+
+            assertEquals("Anna", addresses.get(0).getFirstname());
+            assertEquals("Zoe", addresses.get(1).getFirstname());
+            assertEquals("Bernd", addresses.get(2).getFirstname());
+        }
+
+        @Test
+        @DisplayName("null-Nachname wird nicht mit NullPointerException bestraft")
+        void compare_nullLastname_doesNotThrow() {
+            Address nullLastname = new Address(4, "Chris", null, "076", date(2020, 1, 1));
+
+            assertDoesNotThrow(() -> comparator.compare(nullLastname, anna));
+            assertTrue(comparator.compare(nullLastname, anna) < 0);
+        }
+
+        @Test
+        @DisplayName("Kein-Argument-Konstruktor entspricht LASTNAME, FIRSTNAME")
+        void noArgsConstructor_matchesExplicitLastnameFirstname() {
+            AddressComparator explicit = new AddressComparator(
+                    AddressComparator.SortField.LASTNAME, AddressComparator.SortField.FIRSTNAME);
+
+            assertEquals(explicit.compare(anna, bernd), comparator.compare(anna, bernd));
+            assertEquals(explicit.compare(anna, annaZweite), comparator.compare(anna, annaZweite));
+        }
+    }
+
+    @Nested
+    @DisplayName("Neue Funktionalitaet: konfigurierbare Sortierkriterien")
+    class ConfigurableSorting {
+
+        @Test
+        @DisplayName("Sortierung nach ID")
+        void compare_byId_sortsAscending() {
+            AddressComparator byId = new AddressComparator(AddressComparator.SortField.ID);
+
+            assertTrue(byId.compare(anna, bernd) < 0, "ID 1 sollte vor ID 2 stehen");
+            assertTrue(byId.compare(annaZweite, anna) > 0, "ID 3 sollte nach ID 1 stehen");
+        }
+
+        @Test
+        @DisplayName("Sortierung nach Telefonnummer")
+        void compare_byPhonenumber_sortsAscending() {
+            AddressComparator byPhone = new AddressComparator(AddressComparator.SortField.PHONENUMBER);
+
+            // "077" < "078" < "079"
+            assertTrue(byPhone.compare(annaZweite, bernd) < 0);
+            assertTrue(byPhone.compare(bernd, anna) < 0);
+        }
+
+        @Test
+        @DisplayName("Sortierung nach Registrierungsdatum")
+        void compare_byRegistrationDate_sortsAscending() {
+            AddressComparator byDate = new AddressComparator(AddressComparator.SortField.REGISTRATION_DATE);
+
+            // bernd (2019) < anna (2020) < annaZweite (2021)
+            assertTrue(byDate.compare(bernd, anna) < 0);
+            assertTrue(byDate.compare(anna, annaZweite) < 0);
+            assertTrue(byDate.compare(annaZweite, bernd) > 0);
+        }
+
+        @Test
+        @DisplayName("Mehrere Kriterien: Vorname zuerst, dann Nachname als Tie-Breaker")
+        void compare_multipleFields_appliesInGivenPriority() {
+            Address annaAnderegg = new Address(5, "Anna", "Anderegg", "079", date(2020, 5, 1));
+            Address annaZimmermann = new Address(6, "Anna", "Zimmermann", "070", date(2020, 5, 1));
+
+            AddressComparator byFirstThenLast = new AddressComparator(
+                    AddressComparator.SortField.FIRSTNAME, AddressComparator.SortField.LASTNAME);
+
+            // Gleicher Vorname "Anna" -> Nachname entscheidet: Anderegg vor Zimmermann
+            assertTrue(byFirstThenLast.compare(annaAnderegg, annaZimmermann) < 0);
+            // Gegenueber "Bernd" gewinnt "Anna" bereits beim ersten Kriterium
+            assertTrue(byFirstThenLast.compare(annaAnderegg, bernd) < 0);
+        }
+
+        @Test
+        @DisplayName("Sortieren einer Liste nach Registrierungsdatum ergibt chronologische Reihenfolge")
+        void sortList_byRegistrationDate_producesChronologicalOrder() {
+            AddressComparator byDate = new AddressComparator(AddressComparator.SortField.REGISTRATION_DATE);
+            List<Address> addresses = new ArrayList<>(List.of(annaZweite, anna, bernd));
+
+            addresses.sort(byDate);
+
+            assertEquals(bernd, addresses.get(0));      // 2019
+            assertEquals(anna, addresses.get(1));        // 2020
+            assertEquals(annaZweite, addresses.get(2));  // 2021
+        }
+
+        @Test
+        @DisplayName("null-Telefonnummer wird bei PHONENUMBER-Sortierung toleriert (nullsFirst)")
+        void compare_byPhonenumber_nullValue_doesNotThrow() {
+            Address noPhone = new Address(7, "Chris", "Ohneton", null, date(2020, 1, 1));
+            AddressComparator byPhone = new AddressComparator(AddressComparator.SortField.PHONENUMBER);
+
+            assertDoesNotThrow(() -> byPhone.compare(noPhone, anna));
+            assertTrue(byPhone.compare(noPhone, anna) < 0);
+        }
+
+        @Test
+        @DisplayName("null-Registrierungsdatum wird toleriert (nullsFirst)")
+        void compare_byRegistrationDate_nullValue_doesNotThrow() {
+            Address noDate = new Address(8, "Chris", "Ohnedatum", "075", null);
+            AddressComparator byDate = new AddressComparator(AddressComparator.SortField.REGISTRATION_DATE);
+
+            assertDoesNotThrow(() -> byDate.compare(noDate, anna));
+            assertTrue(byDate.compare(noDate, anna) < 0);
+        }
+
+        @Test
+        @DisplayName("Leere SortField-Liste wirft IllegalArgumentException")
+        void constructor_noFields_throwsIllegalArgumentException() {
+            AddressComparator.SortField[] emptyFields = {};
+
+            assertThrows(IllegalArgumentException.class, () -> new AddressComparator(emptyFields));
+        }
+    }
+}
+
+```
+
 

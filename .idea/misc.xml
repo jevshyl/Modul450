@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/test-levels-unit-testing/02_bank-vorgabe/02_bank-vorgabe/pom.xml" />
+        <option value="$PROJECT_DIR$/automation-testing/spring-boot-angular-basic-lw2/pom.xml" />
       </list>
     </option>
   </component>

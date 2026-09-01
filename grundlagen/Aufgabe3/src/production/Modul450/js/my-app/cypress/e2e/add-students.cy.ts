@@ -11,7 +11,7 @@ describe('Student Form Page', () => {
   });
 
   it('should show validation errors for empty fields', () => {
-    cy.get('button[type="submit"]').should('be.disabled');
+    cy.get('.alert alert-danger').should('be.visible');
   });
 
   it('should add a new student successfully', () => {
@@ -31,6 +31,7 @@ describe('Student Form Page', () => {
     cy.get('input[name="email"]').type('test@tbz.ch');
     cy.get('button[type="submit"]').click();
 
+    // After redirect, form should not be visible
     cy.get('form').should('not.exist');
   });
 

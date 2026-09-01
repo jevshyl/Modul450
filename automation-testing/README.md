@@ -31,9 +31,9 @@ Testing Typen:
 
 ## Aufgabe 1 - Postman
 
-[Postman](Screenshot%202026-09-01%20163056.png)
+![Postman](Screenshot%202026-09-01%20163056.png)
 
-[Postman](Screenshot%202026-09-01%20163103.png)
+![Postman](Screenshot%202026-09-01%20163103.png)
 
 
 ## Aufgabe 2

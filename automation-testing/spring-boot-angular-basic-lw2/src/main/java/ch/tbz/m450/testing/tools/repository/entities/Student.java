@@ -4,8 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.Type;
 
 @Entity
 @AllArgsConstructor
@@ -15,8 +20,14 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private final String name;
-    private final String email;
+
+    @NotBlank(message = "Name darf nicht leer sein")
+    @Size(min = 2, max = 100)
+    private String name;
+
+    @NotBlank(message = "E-Mail darf nicht leer sein")
+    @Email(message = "E-Mail-Format ist ungültig")
+    private String email;
 
     public Student(String name, String email) {
         this.name = name;

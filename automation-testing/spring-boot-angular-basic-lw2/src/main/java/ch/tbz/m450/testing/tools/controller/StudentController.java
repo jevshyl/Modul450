@@ -2,6 +2,10 @@ package ch.tbz.m450.testing.tools.controller;
 
 import ch.tbz.m450.testing.tools.repository.StudentRepository;
 import ch.tbz.m450.testing.tools.repository.entities.Student;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +27,20 @@ public class StudentController {
     }
 
     @PostMapping("/students")
-    void addStudent(@RequestBody Student user) {
+    ResponseEntity<Student> addStudent(@Valid @RequestBody Student user) {
         studentRepository.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .get(0)
+                .getDefaultMessage();
+
+        return ResponseEntity.badRequest().body(message);
+    }
 }

@@ -90,12 +90,10 @@ Testing Typen:
 
 ```typescript
    @NotBlank(message = "Name darf nicht leer sein")
-   @NotNull(message = "Name darf nicht null sein")
    @Size(min = 2, max = 100)
    private String name;
 
    @NotBlank(message = "E-Mail darf nicht leer sein")
-   @NotNull(message = "Name darf nicht null sein")
    @Email(message = "E-Mail-Format ist ungültig")
    private String email;
 ```

@@ -56,6 +56,26 @@ Testing Typen:
 ![Performance auf Postman](Screenshot%202026-09-01%20155253.png)
 
 
+#### Interpretation
+
+#### Test-Konfiguration
+- Tool: Postman
+- Dauer: 1 Minute
+- Virtuelle Benutzer: 20
+- Endpoint: GET /students
+
+#### Ergebnisse
+- Total Requests: 2,991
+- Requests/Sekunde: ~50
+- Durchschnittliche Antwortzeit: 7ms
+- Fehlerrate: 0%
+- 99% der Anfragen < 35ms
+
+#### Interpretation
+- Schnelle Antwortzeiten (< 10ms)
+- Keine technischen Fehler
+- Gute Performance unter Last
+
 
 ### Fixed Performance
 ![Performance Fixed](Screenshot%202026-09-01%20155626.png)

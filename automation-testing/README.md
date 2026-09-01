@@ -112,3 +112,13 @@ Testing Typen:
 | Änderung im Controller | Ob es sich um ein Student Objekt handelt |
 
 
+### Zeitaufwand
+
+| Aufgabe                    | Zeit in min |
+|----------------------------|-------------|
+| App studieren              | 10          |  
+| Student.java anpassen      | 10          |
+| StudentController anpassen | 5           |
+| Fehler studieren           | 10          |
+| Exception verfassen        | 10          |
+| Testing                    | 15          |

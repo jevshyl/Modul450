@@ -31,10 +31,9 @@ Testing Typen:
 
 ## Aufgabe 1 - Postman
 
-<video controls width="800">
-  <source src="Bildschirmaufnahme%202026-09-01%20153510.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[Postman](Screenshot%202026-09-01%20163056.png)
+
+[Postman](Screenshot%202026-09-01%20163103.png)
 
 
 ## Aufgabe 2

@@ -19,6 +19,8 @@ Nehmen Sie sich dafür ca. 1 Lektion Zeit. Ziel ist es, dass Sie schauen, wie we
 - Softwarelösung: Docker Compose
 - Umgebung: Testing Umgebung
 - Software: [Bank Projekt](../../test-levels-unit-testing/02_bank-vorgabe/02_bank-vorgabe)
+- [Dockerfile](../../test-levels-unit-testing/02_bank-vorgabe/02_bank-vorgabe/Dockerfile)
+- [docker-compose](../../test-levels-unit-testing/02_bank-vorgabe/02_bank-vorgabe/docker-ccompose.yml)
 
 ## Reflexion
 

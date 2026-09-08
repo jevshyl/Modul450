@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Bank Tests
 
 on:
   push:
@@ -9,11 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout relevant folder
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            test-levels-unit-testing/02_bank-vorgabe/02_bank-vorgabe
+          sparse-checkout-cone-mode: true
 
       - name: Build Docker image
+        working-directory: test-levels-unit-testing/02_bank-vorgabe/02_bank-vorgabe
         run: docker build -t bank-tests .
 
       - name: Run tests
+        working-directory: test-levels-unit-testing/02_bank-vorgabe/02_bank-vorgabe
         run: docker run --rm bank-tests

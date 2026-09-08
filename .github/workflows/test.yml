@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout relevant folder
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           sparse-checkout: |
             test-levels-unit-testing/02_bank-vorgabe/02_bank-vorgabe

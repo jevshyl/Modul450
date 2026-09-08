@@ -9,7 +9,9 @@
 ## Aufgabe 2(Reports):
 
 ![](./jacoco.png)
-![](./doku.pdf)
+![](./s1.png)
+![](./s2.png)
+![](./s3.png)
 
 
 ---

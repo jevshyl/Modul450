@@ -5,8 +5,8 @@ Normale Assertions brechen den Test beim ersten Fehler sofort ab. SoftAssertions
 **vorteile:**
 - **Test läuft immer komplett durch:** Ein Fehler stoppt den Test nicht. Alle nachfolgenden Checks werden trotzdem ausgeführt.
 
-- **Alle Fehler auf einen Blick:** Perfekt für Objekte mit vielen Feldern (z. B. DTOs). Du siehst sofort, was stimmt und was nicht. 
-Das spart dir das nervige "Fehler beheben ➔ Test neu starten ➔ nächster Fehler"-Spielchen.
+- **Alle Fehler auf einen Blick:** Perfekt für Objekte mit vielen Feldern (z. B. DTOs). mann siehst sofort, was stimmt und was nicht. 
+Das spart das nervige "Fehler beheben ➔ Test neu starten ➔ nächster Fehler"-Spielchen.
 
 - **Gesammelter Fehlerbericht:** Am Ende wirft der Test eine übersichtliche Liste mit allen aufgetretenen Fehlern aus.
 

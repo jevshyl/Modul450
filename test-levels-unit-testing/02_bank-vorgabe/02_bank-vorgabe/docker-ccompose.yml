@@ -1,0 +1,7 @@
+version: "3.9"
+
+services:
+  tests:
+    build:
+      dockerfile: Dockerfile
+    container_name: bank_tests

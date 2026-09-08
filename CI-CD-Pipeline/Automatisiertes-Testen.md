@@ -8,8 +8,8 @@
 ---
 ## Aufgabe 2(Reports):
 
-
-
+![](./jacoco.png)
+![](./doku.pdf)
 
 
 ---

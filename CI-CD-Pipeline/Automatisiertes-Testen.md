@@ -5,15 +5,15 @@ Im Vergleich zu regulären ("harten") Assertions (z. B. `assertThat(...)`) biete
 
 - **Kein vorzeitiger Abbruch (Non-short-circuiting):**
 
-Bei normalen Assertions bricht der Test beim ersten Fehlschlag sofort mit einer Exception ab. Alle nachfolgenden Überprüfungen im selben Testfall werden nicht mehr ausgeführt.
-**SoftAssertions** führen alle definierten Überprüfungen aus, unabhängig davon, ob vorherige Assertions fehlgeschlagen sind.
+    Bei normalen Assertions bricht der Test beim ersten Fehlschlag sofort mit einer Exception ab. Alle nachfolgenden Überprüfungen im selben Testfall werden nicht mehr ausgeführt.
+    **SoftAssertions** führen alle definierten Überprüfungen aus, unabhängig davon, ob vorherige Assertions fehlgeschlagen sind.
 - **Vollständiges Fehlerbild auf einen Blick:**
 
-Gerade beim Testen von **Mappings / DTOs / Entities** mit vielen Attributen sieht man sofort, welche Felder korrekt gemappt wurden und welche fehlerhaft sind.
-Man vermeidet den zeitraubenden **"Fix-Run-Fail-Loop"**, bei dem man nach jeder Fehlerkorrektur den Test neu startet, nur um auf den nächsten Fehler zu stossen.
+    Gerade beim Testen von **Mappings / DTOs / Entities** mit vielen Attributen sieht man sofort, welche Felder korrekt gemappt wurden und welche fehlerhaft sind.
+    Man vermeidet den zeitraubenden **"Fix-Run-Fail-Loop"**, bei dem man nach jeder Fehlerkorrektur den Test neu startet, nur um auf den nächsten Fehler zu stossen.
 - **Kombinierter und übersichtlicher Fehlerbericht:**
 
-AssertJ sammelt alle aufgetretenen Fehler und wirft am Ende des assertSoftly-Blocks einen einzigen zusammenfassenden Fehlerbericht mit genauer Angabe aller betroffenen Felder und Beschreibungen `(.as("...")).`
+    AssertJ sammelt alle aufgetretenen Fehler und wirft am Ende des assertSoftly-Blocks einen einzigen zusammenfassenden Fehlerbericht mit genauer Angabe aller betroffenen Felder und Beschreibungen           `(.as("...")).`
 
 
 ### Controller Test:

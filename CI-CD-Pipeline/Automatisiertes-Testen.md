@@ -592,6 +592,21 @@ class IngredientEntityMapperTest {
 ---
 ## Aufgabe 2(Reports):
 
+Die automatisierte Generierung von visuellen Test- und Code-Coverage-Reports wurde in der 
+`pom.xml`eingerichtet.
+
+- **JaCoCo Code Coverage Report (jacoco-maven-plugin):** 
+
+ - Ausführung: Wird automatisch bei jedem mvn test über die Goals prepare-agent und report in der test-Phase ausgeführt.
+ - Ergebnis: Erstellt einen interaktiven HTML-Bericht unter target/site/jacoco/index.html.
+ - Funktion: Zeigt die exakte Codeabdeckung (Zeilen, Zweige, Methoden, Klassen) aller Controller, Services, Mapper und Entities mit farblicher Hervorhebung im Quellcode.
+- **Surefire Test Result Report (maven-surefire-report-plugin):**
+
+ - Ausführung: Generiert über das Goal report-only während der test-Phase einen HTML-Testbericht.
+ - Ergebnis: Erstellt einen übersichtlichen HTML-Testbericht unter target/site/surefire-report.html.
+ - Funktion: Zeigt Status, Erfolgsquoten, Fehlerdetails und Ausführungszeiten aller Testklassen.
+
+
 ![](./jacoco.png)
 ![](./s1.png)
 ![](./s2.png)

@@ -1,14 +1,19 @@
 ## Aufgabe 1(Unit Testing):
----
-**Warum SoftAssertions nutzen?**
-Normale Assertions brechen den Test beim ersten Fehler sofort ab. SoftAssertions ignorieren das und prüfen einfach weiter.
-**vorteile:**
-- **Test läuft immer komplett durch:** Ein Fehler stoppt den Test nicht. Alle nachfolgenden Checks werden trotzdem ausgeführt.
 
-- **Alle Fehler auf einen Blick:** Perfekt für Objekte mit vielen Feldern (z. B. DTOs). mann siehst sofort, was stimmt und was nicht. 
-Das spart das nervige "Fehler beheben ➔ Test neu starten ➔ nächster Fehler"-Spielchen.
+### Was ist der Vorteil von SoftAssertions?
+Im Vergleich zu regulären ("harten") Assertions (z. B. `assertThat(...)`) bieten SoftAssertions wesentliche Vorteile:
 
-- **Gesammelter Fehlerbericht:** Am Ende wirft der Test eine übersichtliche Liste mit allen aufgetretenen Fehlern aus.
+- **Kein vorzeitiger Abbruch (Non-short-circuiting):**
+
+Bei normalen Assertions bricht der Test beim ersten Fehlschlag sofort mit einer Exception ab. Alle nachfolgenden Überprüfungen im selben Testfall werden nicht mehr ausgeführt.
+**SoftAssertions** führen alle definierten Überprüfungen aus, unabhängig davon, ob vorherige Assertions fehlgeschlagen sind.
+- **Vollständiges Fehlerbild auf einen Blick:**
+
+Gerade beim Testen von **Mappings / DTOs / Entities** mit vielen Attributen sieht man sofort, welche Felder korrekt gemappt wurden und welche fehlerhaft sind.
+Man vermeidet den zeitraubenden **"Fix-Run-Fail-Loop"**, bei dem man nach jeder Fehlerkorrektur den Test neu startet, nur um auf den nächsten Fehler zu stossen.
+- **Kombinierter und übersichtlicher Fehlerbericht:**
+
+AssertJ sammelt alle aufgetretenen Fehler und wirft am Ende des assertSoftly-Blocks einen einzigen zusammenfassenden Fehlerbericht mit genauer Angabe aller betroffenen Felder und Beschreibungen `(.as("...")).`
 
 
 ### Controller Test:

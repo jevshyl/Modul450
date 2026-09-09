@@ -597,6 +597,67 @@ class IngredientEntityMapperTest {
 ![](./s2.png)
 ![](./s3.png)
 
-
 ---
 ## Aufgabe 3(Pipeline):
+
+Automatischer Trigger: Jeder git push (bzw. Commit) löst automatisch die Pipeline aus.
+- **Phasen (Stages):**
+   - **build:** Kompiliert den Quellcode und prüft die Abhängigkeiten.
+   - **test:** Führt alle Unit- und Integrationstests aus und erfasst Testergebnisse sowie Code-Coverage.
+   - **deploy / pages:** Stellt die generierten HTML-Reports (JaCoCo Coverage & Surefire Test-Report) als einsehbare Artefakte bzw. über Pages zur Verfügung.
+```yml
+## ci.yml
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build, Test & Coverage
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: recipe-planner-backend
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build and Run Tests
+        run: mvn clean test --batch-mode --errors --fail-at-end
+
+      - name: Generate JaCoCo Coverage Report
+        run: mvn jacoco:report --batch-mode
+
+      - name: Upload Test & Coverage Reports
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-and-coverage-reports
+          path: |
+            recipe-planner-backend/target/site/jacoco/
+            recipe-planner-backend/target/surefire-reports/
+          retention-days: 14
+
+      - name: Generate Job Summary
+        if: always()
+        run: |
+          echo "##  Test & Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Reports" >> $GITHUB_STEP_SUMMARY
+          echo "- JaCoCo: \`target/site/jacoco/index.html\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Surefire: \`target/surefire-reports/\`" >> $GITHUB_STEP_SUMMARY
+```

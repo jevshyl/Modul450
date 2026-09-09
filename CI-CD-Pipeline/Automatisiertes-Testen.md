@@ -217,7 +217,7 @@ class RecipeControllerTest {
 
 ### Mapper test:
 #### IngrediesntEntityMapper:
-```
+```java
 package ch.tbz.recipe.planner.mapper;
 
 import ch.tbz.recipe.planner.domain.Ingredient;

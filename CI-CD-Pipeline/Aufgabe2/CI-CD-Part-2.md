@@ -12,10 +12,6 @@
 
 # Aufgabe 2
 
-Entscheiden Sie sich für eine der vorgestellten Softwarelösungen und überlegen Sie, welche Umgebung Sie damit automatisiert aufsetzen möchten, sowie welche Software Sie darauf deployen möchten. Wenn Sie keine eigene Software vorliegen haben, können Sie gerne eine beliebige im Modul kennengelernte Software verwenden, um diese in einer Umgebung zu deployen.
-Nehmen Sie sich dafür ca. 1 Lektion Zeit. Ziel ist es, dass Sie schauen, wie weit Sie mit dem Setup in der einen Lektion kommen werden und an welche Probleme Sie anstossen werden. Setzen Sie sich danach hin und überlegen Sie sich wann und in welchen Situationen ein Einsatz der getesteten Softwarelösung für Sie sinnvoll sein könnte. Schreiben Sie Ihre Gedanken in einer kurzen Reflexion bzw. einem Fazit nieder.
-
-
 - Softwarelösung: Docker Compose
 - Umgebung: Testing Umgebung
 - Software: [Bank Projekt](../../test-levels-unit-testing/02_bank-vorgabe/02_bank-vorgabe)

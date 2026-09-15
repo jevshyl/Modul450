@@ -12,6 +12,8 @@
       <sourceFolder url="file://$MODULE_DIR$/teststrategien/Projekt/bank-software-mvn/bank-software-mvn/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/teststrategien/Projekt/bank-software-mvn/bank-software-mvn/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/teststrategien/Projekt/bank-software-mvn/bank-software-mvn/src/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/code-review/recipe-planner-fronend-and-backend/recipe-planner-fronend-and-backend/recipe-planner-backend/src/main" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/code-review/recipe-planner-fronend-and-backend/recipe-planner-fronend-and-backend/recipe-planner-backend/src/test" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

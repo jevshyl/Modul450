@@ -1,9 +1,9 @@
-package java.ch.tbz.recipe.planner.service;
+package ch.tbz.recipe.planner.service;
 
-import java.ch.tbz.recipe.planner.entities.RecipeEntity;
-import java.ch.tbz.recipe.planner.mapper.RecipeEntityMapper;
-import java.ch.tbz.recipe.planner.repository.RecipeRepository;
-import java.ch.tbz.recipe.planner.domain.Recipe;
+import ch.tbz.recipe.planner.entities.RecipeEntity;
+import ch.tbz.recipe.planner.mapper.RecipeEntityMapper;
+import ch.tbz.recipe.planner.repository.RecipeRepository;
+import ch.tbz.recipe.planner.domain.Recipe;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

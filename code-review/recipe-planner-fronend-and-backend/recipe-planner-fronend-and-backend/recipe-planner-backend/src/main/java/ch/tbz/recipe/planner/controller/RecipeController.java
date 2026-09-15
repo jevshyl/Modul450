@@ -1,8 +1,8 @@
-package java.ch.tbz.recipe.planner.controller;
+package ch.tbz.recipe.planner.controller;
 
-import java.ch.tbz.recipe.planner.domain.Recipe;
-import java.ch.tbz.recipe.planner.mapper.RecipeEntityMapper;
-import java.ch.tbz.recipe.planner.service.RecipeService;
+import ch.tbz.recipe.planner.domain.Recipe;
+import ch.tbz.recipe.planner.mapper.RecipeEntityMapper;
+import ch.tbz.recipe.planner.service.RecipeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

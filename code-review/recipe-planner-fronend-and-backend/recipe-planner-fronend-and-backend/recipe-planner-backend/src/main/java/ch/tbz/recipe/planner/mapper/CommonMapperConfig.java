@@ -1,4 +1,4 @@
-package java.ch.tbz.recipe.planner.mapper;
+package ch.tbz.recipe.planner.mapper;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.MapperConfig;

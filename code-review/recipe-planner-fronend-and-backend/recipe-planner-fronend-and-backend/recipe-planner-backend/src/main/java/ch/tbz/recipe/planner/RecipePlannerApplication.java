@@ -1,10 +1,10 @@
-package java.ch.tbz.recipe.planner;
+package ch.tbz.recipe.planner;
 
-import java.ch.tbz.recipe.planner.mapper.RecipeEntityMapper;
-import java.ch.tbz.recipe.planner.repository.RecipeRepository;
-import java.ch.tbz.recipe.planner.domain.Ingredient;
-import java.ch.tbz.recipe.planner.domain.Recipe;
-import java.ch.tbz.recipe.planner.domain.Unit;
+import ch.tbz.recipe.planner.mapper.RecipeEntityMapper;
+import ch.tbz.recipe.planner.repository.RecipeRepository;
+import ch.tbz.recipe.planner.domain.Ingredient;
+import ch.tbz.recipe.planner.domain.Recipe;
+import ch.tbz.recipe.planner.domain.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

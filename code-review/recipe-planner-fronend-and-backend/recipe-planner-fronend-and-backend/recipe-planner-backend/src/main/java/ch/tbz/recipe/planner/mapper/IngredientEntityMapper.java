@@ -1,7 +1,7 @@
-package java.ch.tbz.recipe.planner.mapper;
+package ch.tbz.recipe.planner.mapper;
 
-import java.ch.tbz.recipe.planner.entities.IngredientEntity;
-import java.ch.tbz.recipe.planner.domain.Ingredient;
+import ch.tbz.recipe.planner.entities.IngredientEntity;
+import ch.tbz.recipe.planner.domain.Ingredient;
 import org.mapstruct.Mapper;
 
 import java.util.List;

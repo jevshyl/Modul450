@@ -1,4 +1,4 @@
-package java.ch.tbz.recipe.planner.entities;
+package ch.tbz.recipe.planner.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

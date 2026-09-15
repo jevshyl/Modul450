@@ -1,4 +1,4 @@
-package java.ch.tbz.recipe.planner.domain;
+package ch.tbz.recipe.planner.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

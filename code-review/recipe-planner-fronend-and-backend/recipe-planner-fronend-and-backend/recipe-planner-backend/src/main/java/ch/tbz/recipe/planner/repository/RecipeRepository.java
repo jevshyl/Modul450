@@ -1,7 +1,7 @@
-package java.ch.tbz.recipe.planner.repository;
+package ch.tbz.recipe.planner.repository;
 
 
-import java.ch.tbz.recipe.planner.entities.RecipeEntity;
+import ch.tbz.recipe.planner.entities.RecipeEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

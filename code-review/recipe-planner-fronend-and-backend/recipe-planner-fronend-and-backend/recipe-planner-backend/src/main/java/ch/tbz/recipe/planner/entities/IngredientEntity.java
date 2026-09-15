@@ -1,6 +1,6 @@
-package java.ch.tbz.recipe.planner.entities;
+package ch.tbz.recipe.planner.entities;
 
-import java.ch.tbz.recipe.planner.domain.Unit;
+import ch.tbz.recipe.planner.domain.Unit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

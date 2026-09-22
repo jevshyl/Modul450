@@ -1,7 +1,7 @@
-package java.ch.tbz.recipe.planner.mapper;
+package ch.tbz.recipe.planner.mapper;
 
-import java.ch.tbz.recipe.planner.domain.Ingredient;
-import java.ch.tbz.recipe.planner.entities.IngredientEntity;
+import ch.tbz.recipe.planner.domain.Ingredient;
+import ch.tbz.recipe.planner.entities.IngredientEntity;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-09-15T13:57:02+0200",
+    date = "2026-09-15T13:58:44+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component

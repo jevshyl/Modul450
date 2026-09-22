@@ -1,13 +1,16 @@
 package ch.tbz.recipe.planner.service;
 
 import ch.tbz.recipe.planner.entities.RecipeEntity;
+import ch.tbz.recipe.planner.mapper.IngredientEntityMapper;
 import ch.tbz.recipe.planner.mapper.RecipeEntityMapper;
 import ch.tbz.recipe.planner.repository.RecipeRepository;
 import ch.tbz.recipe.planner.domain.Recipe;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
@@ -15,10 +18,13 @@ public class RecipeService {
     RecipeEntityMapper mapper;
 
     RecipeRepository repository;
+    private final IngredientEntityMapper ingredientEntityMapper;
 
-    public RecipeService(RecipeEntityMapper mapper, RecipeRepository repository) {
+    public RecipeService(RecipeEntityMapper mapper, RecipeRepository repository,
+                         IngredientEntityMapper ingredientEntityMapper) {
         this.mapper = mapper;
         this.repository = repository;
+        this.ingredientEntityMapper = ingredientEntityMapper;
     }
 
     public List<Recipe> getRecipes() {
@@ -33,5 +39,11 @@ public class RecipeService {
     public Recipe addRecipe(Recipe recipe) {
         var createdRecipe = repository.save(mapper.domainToEntity(recipe));
         return mapper.entityToDomain(createdRecipe);
+    }
+
+    public Recipe updateRecipe(UUID recipeId, Recipe recipe) {
+        recipe.setId(recipeId);
+        var updatedRecipe = repository.save(mapper.domainToEntity(recipe));
+        return mapper.entityToDomain(updatedRecipe);
     }
 }

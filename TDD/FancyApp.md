@@ -47,6 +47,8 @@ Die Klasse `Test` erbt von `PHPUnit\Framework\TestCase`. Die Methode `setUp()` w
 2. `calcAverage()`: Ein fehlertoleranter Durchschnittsrechner, der auch mit String-Repräsentationen von Zahlen umgehen kann und bei ungültigen Daten `false` meldet.
 3. `getOpposite()`: Eine clevere "2-in-1"-Methode, die je nach Datentyp (Array oder String) entweder `implode` oder `explode` ausführt und bei falschen Datentypen sicher `false` zurückgibt.
 ---
+### 3:
+![./tpassed.png]
 ## Aufgabe2:
 ```php
 

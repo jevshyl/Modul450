@@ -1,6 +1,19 @@
-## Aufgabe1:
+## Aufgabe 1:
+```
+php -v
+composer -v
+composer require --dev phpunit/phpunit
+# automatisch wird erstellet:
+composer.json
+composer.lock
+vendor/
 
+vendor\bin\phpunit --version
 
+```
+
+---
+## Aufgabe2:
 **Allgemeine Beobachtung:**
 Die Klasse `Test` erbt von `PHPUnit\Framework\TestCase`. Die Methode `setUp()` wird vor jedem einzelnen Testfall automatisch ausgeführt. Sie stellt sicher, dass mit `unset()` ein alter Zustand gelöscht und ein frisches, unverändertes Objekt von `MyFancyClass` erstellt wird. Das ist wichtig, damit sich die Tests nicht gegenseitig beeinflussen.
 
@@ -49,7 +62,7 @@ Die Klasse `Test` erbt von `PHPUnit\Framework\TestCase`. Die Methode `setUp()` w
 ---
 ### 3:
 ![](./tpassed.png)
-## Aufgabe2:
+
 ```php
 
 ```

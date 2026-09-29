@@ -27,7 +27,7 @@ public function setUp() : void {
 Diese Methode wird **vor jedem Testfall** ausgeführt.
 
 * Ein eventuell vorhandenes Objekt von `MyFancyClass` wird entfernt.
-* Anschließend wird ein neues `MyFancyClass`-Objekt erstellt.
+* Anschliessend wird ein neues `MyFancyClass`-Objekt erstellt.
 * Dieses steht danach in `$this->_myFancyClass` für den jeweiligen Test zur Verfügung.
 
 ---
@@ -169,7 +169,7 @@ getOpposite($stringLoremIpsum, ',')
 
 → Aufteilung anhand von `","`, es werden **4 Elemente** erwartet.
 
-Außerdem wird geprüft, ob die Umwandlung **umkehrbar** ist:
+Ausserdem wird geprüft, ob die Umwandlung **umkehrbar** ist:
 
 ```php
 getOpposite(getOpposite($stringList))

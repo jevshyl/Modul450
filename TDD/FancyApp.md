@@ -206,5 +206,5 @@ $this->assertFalse(
 Die `assert...`-Methoden sind dabei jeweils die **Prüfbedingungen**. Schlägt eine davon fehl, gilt der jeweilige Testfall als fehlgeschlagen.
 
 ---
-### 3:
+## Test Ergebnis
 ![](./tpassed.png)

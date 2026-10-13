@@ -1,11 +1,13 @@
 package tbz.project.spaceproject;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
 @Component
+@ConditionalOnProperty(name = "app.cli.enabled", havingValue = "true")
 public class SimulationRunner implements CommandLineRunner {
 
     private final Simulation simulation;

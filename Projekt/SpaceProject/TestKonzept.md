@@ -70,7 +70,7 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 ##  Environmental Needs (Umgebungs‑Anforderungen)
 | Umgebung | Beschreibung |
 |----------|--------------|
-| **Entwicklungs‑/Build‑Umgebung** | Windows 10, JDK 17, Node 20, Gradle 8, npm 10, Docker (für Testcontainers) |
+| **Entwicklungs‑/Build‑Umgebung** | Windows 10, JDK 21, Node 20, Gradle 8, npm 10, Docker (für Testcontainers) |
 | **CI‑Server** | GitHub Actions– führt `./gradlew test`, `npm test`, Playwright‑Tests |
 | **Test‑Datenbank** | PostgreSQL 15 in Docker‑Container, initialisiertes Schema aus `src/main/resources/schema.sql` |
 | **Browser‑Umgebung** | Chromium (Headless) für Playwright |

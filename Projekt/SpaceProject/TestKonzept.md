@@ -44,8 +44,7 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 | `PlanetService.calculateGravity` | Ergebnis innerhalb ±0.01 m/s² des erwarteten Werts | Abweichung > 0.01 m/s² oder Exception |
 | UI‑Komponente `PlanetDetailPage` | Alle Planet‑Attribute werden korrekt angezeigt | Fehlende oder falsche Daten, JavaScript‑Fehler im Browser-Console log |
 | Datenbank‑Constraint `planet.mass > 0` | Insert/Update mit negativer Masse wird abgelehnt (SQL‑Exception) | Daten werden gespeichert, Test‑Rollback fehlschlägt |
-| Performance‑Test (JMeter) | Durchsatz ≥ 200 req/s, 95‑%‑Antwortzeit < 200 ms | Durchsatz < 200 req/s oder 95‑%‑Antwortzeit > 200 ms |
-| Security‑Scan (OWASP ZAP) | Keine kritischen Schwachstellen (CRITICAL=0) | Eine oder mehrere kritische Schwachstellen gefunden |
+
 
 ---
 
@@ -72,27 +71,11 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 | Umgebung | Beschreibung |
 |----------|--------------|
 | **Entwicklungs‑/Build‑Umgebung** | Windows 10, JDK 17, Node 20, Gradle 8, npm 10, Docker (für Testcontainers) |
-| **CI‑Server** | GitHub Actions (Ubuntu‑Runner) – führt `./gradlew test`, `npm test`, Playwright‑Tests |
+| **CI‑Server** | GitHub Actions– führt `./gradlew test`, `npm test`, Playwright‑Tests |
 | **Test‑Datenbank** | PostgreSQL 15 in Docker‑Container, initialisiertes Schema aus `src/main/resources/schema.sql` |
-| **Browser‑Umgebung** | Chromium (Headless) für Playwright, optional Firefox/Chrome für manuelle UI‑Tests |
-| **Performance‑Test‑Werkzeug** | JMeter 5.6, ausgeführt auf a dedicated Windows‑VM mit 4 CPU, 8 GB RAM |
-| **Security‑Scan‑Werkzeug** | OWASP ZAP 2.12, konfiguriert mit Auth‑Token‑Mock für geschützte Endpunkte |
-| **Test‑Reporting** | Allure 2, HTML‑Reports im `build/reports/allure` Verzeichnis |
+| **Browser‑Umgebung** | Chromium (Headless) für Playwright |
+| **Test‑Reporting** |jococo für test coverage |
 
----
 
-*Dokument erstellt am 2026‑10‑14.*
-
-##  CI/CD Pipeline (Integration with JaCoCo & Surefire)
-
-###  Build & Test Execution
-- **Gradle** mit **Surefire‑Plugin** führt Unit‑ und Integration‑Tests aus.
-- **JaCoCo** erzeugt Coverage‑Reports (HTML) unter `build/reports/jacoco`.
-- Mindest‑Coverage: 80 % Zeilen, 70 % Branch.
-- Test‑Tasks:
-  - `./gradlew test` – führt alle Tests aus.
-  - `./gradlew jacocoTestReport` – erstellt Coverage‑Report.
-  - `./gradlew sonarqube` – optionales SonarQube‑Reporting.
----
 
 

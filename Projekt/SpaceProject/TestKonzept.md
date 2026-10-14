@@ -37,7 +37,7 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 
 ---
 
-## Item Passed / Fail Criteria (Abnahmekriterien)
+## Item Passed / Fail Criteria 
 | Testobjekt | Pass‑Kriterium | Fail‑Kriterium |
 |------------|----------------|----------------|
 | API‑Endpunkt `GET /planets` | HTTP 200, JSON‑Array ≥ 1 Eintrag | anderer Statuscode, leeres Array |
@@ -48,7 +48,7 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 
 ---
 
-##  Approach (Test‑Ansatz)
+##  Approach
 1. **Unit‑Tests** (White‑Box) – JUnit 5, Mockito, AssertJ für jede Service‑ und Repository‑Klasse.
 2. **Integration‑Tests** – Spring Boot Test mit Testcontainers (PostgreSQL) für Controller + Service‑Kombination.
 3. **End‑to‑End‑Tests** (Black‑Box) Playwright für UI‑Flows.
@@ -57,7 +57,7 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 
 ---
 
-##  Test Deliverables (Test‑Ergebnisse)
+##  Test Deliverables
 - **Testplan**
 - **Test Cases Specification** erwartetes Ergebnis, Priorität.
 - **Test Scripts** – JUnit‑Klassen, Playwright‑Tests.
@@ -67,7 +67,7 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 ---
 
 
-##  Environmental Needs (Umgebungs‑Anforderungen)
+##  Environmental Needs 
 | Umgebung | Beschreibung |
 |----------|--------------|
 | **Entwicklungs‑/Build‑Umgebung** | Windows 10, JDK 21, Node 20, Gradle 8, npm 10, Docker (für Testcontainers) |

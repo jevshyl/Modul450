@@ -3,7 +3,9 @@
 ---
 
 ## Introduction
-Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑Boot‑Backend (Java) und einem React/TypeScript‑Frontend. 
+
+Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑Boot‑Backend (Java) und einem React/TypeScript‑Frontend.
+
 ---
 
 ##  Test Items 
@@ -26,9 +28,6 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 - Validierung von Eingaben (z. B. Pflichtfelder, Werte‑bereiche)
 - Fehler‑ und Exception‑Handling (HTTP‑Status‑Codes, Fehlermeldungen)
 - UI‑Flows: Auflistung, Detail‑Ansicht, Simulation starten
-- Sicherheit: Rollen‑basiertes Zugriffskontroll‑Schema (Spring Security)
-- Performance‑Grenzwerte (Antwortzeit < 200 ms bei 100 gleichzeitigen Requests)
-- Integration mit PostgreSQL (Transaktions‑Rollback, Constraints)
 
 ### Features NOT to be Tested
 - Third‑Party Services (z. B. externe Auth‑Provider) – werden durch Mock‑Stubs simuliert

@@ -65,13 +65,21 @@ export function PlanetListPage() {
           const id = params.row.id as string
           const name = params.row.name as string
           return (
-            <Stack direction="row" spacing={1.5} sx={{ height: '100%', alignItems: 'center' }}>
+            <Stack
+              direction="row"
+              spacing={1.5}
+              sx={{ height: '100%', alignItems: 'center', lineHeight: 'normal' }}
+            >
               <PlanetOrb planetId={id} size={38} />
               <Box sx={{ minWidth: 0 }}>
-                <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 400, lineHeight: 1.2, color: 'text.primary' }}
+                  noWrap
+                >
                   {name}
                 </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.3 }}>
                   {id}
                 </Typography>
               </Box>
@@ -258,7 +266,7 @@ export function PlanetListPage() {
         <DataGrid
           rows={rows}
           columns={columns}
-          rowHeight={68}
+          rowHeight={72}
           disableRowSelectionOnClick
           onRowDoubleClick={(params) => navigate(`/planets/${params.row.id}`)}
           initialState={{

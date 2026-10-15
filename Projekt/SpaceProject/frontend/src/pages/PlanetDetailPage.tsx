@@ -85,11 +85,11 @@ function RangeBar({
 
 export function PlanetDetailPage() {
   const { routeId } = useParams<{ routeId: string }>()
-  const { data: planet, loading, error, reload } = usePlanet(routeId)
+  const { data: planet, loading, error, status, reload } = usePlanet(routeId)
   const navigate = useNavigate()
 
   if (loading) return <LoadingState label={`Scanning ${routeId ?? 'body'}…`} />
-  if (error) return <ErrorState message={error} onRetry={reload} />
+  if (error && status !== 404) return <ErrorState message={error} onRetry={reload} />
   if (!planet) {
     return (
       <EmptyState

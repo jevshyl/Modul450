@@ -6,6 +6,8 @@ interface AsyncState<T> {
   data: T | null
   loading: boolean
   error: string | null
+  /** HTTP status of the failure, or 0 for a network error. Null while loading. */
+  status: number | null
   reload: () => void
 }
 
@@ -13,6 +15,7 @@ function useAsync<T>(loader: (signal: AbortSignal) => Promise<T>): AsyncState<T>
   const [data, setData] = useState<T | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState<number | null>(null)
   const [nonce, setNonce] = useState(0)
 
   const reload = useCallback(() => setNonce((n) => n + 1), [])
@@ -23,6 +26,7 @@ function useAsync<T>(loader: (signal: AbortSignal) => Promise<T>): AsyncState<T>
 
     setLoading(true)
     setError(null)
+    setStatus(null)
 
     loader(controller.signal)
       .then((result) => {
@@ -30,7 +34,10 @@ function useAsync<T>(loader: (signal: AbortSignal) => Promise<T>): AsyncState<T>
       })
       .catch((cause: unknown) => {
         if (!active || controller.signal.aborted) return
-        setError(cause instanceof ApiError ? cause.message : 'Something went wrong while loading data.')
+        setError(
+          cause instanceof ApiError ? cause.message : 'Something went wrong while loading data.',
+        )
+        setStatus(cause instanceof ApiError ? cause.status : null)
       })
       .finally(() => {
         if (active) setLoading(false)
@@ -42,7 +49,7 @@ function useAsync<T>(loader: (signal: AbortSignal) => Promise<T>): AsyncState<T>
     }
   }, [nonce, loader])
 
-  return { data, loading, error, reload }
+  return { data, loading, error, status, reload }
 }
 
 export const usePlanets = () => useAsync<Planet[]>(planetApi.getPlanets)

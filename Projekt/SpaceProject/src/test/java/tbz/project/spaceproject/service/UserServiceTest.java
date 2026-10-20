@@ -8,6 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tbz.project.spaceproject.Exception.UsernameAlreadyExistsException;
 import tbz.project.spaceproject.User;
 import tbz.project.spaceproject.repository.UserRepository;
 
@@ -45,9 +46,9 @@ class UserServiceTest {
 
         User result = userService.createUser("Alice");
 
-        assertEquals(uuid, result.id());
-        assertEquals("Alice", result.username());
-        assertTrue(result.exploredPlanets().isEmpty());
+        assertEquals(uuid, result.getId());
+        assertEquals("Alice", result.getUsername());
+        assertTrue(result.getExploredPlanets().isEmpty());
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());
@@ -80,9 +81,9 @@ class UserServiceTest {
         Optional<User> result = userService.getUser(uuid);
 
         assertTrue(result.isPresent());
-        assertEquals(uuid, result.get().id());
-        assertEquals("Alice", result.get().username());
-        assertTrue(result.get().exploredPlanets().isEmpty());
+        assertEquals(uuid, result.get().getId());
+        assertEquals("Alice", result.get().getUsername());
+        assertTrue(result.get().getExploredPlanets().isEmpty());
     }
 
     @Test
@@ -102,7 +103,7 @@ class UserServiceTest {
         Optional<User> result = userService.explorePlanet(uuid, "mars");
 
         assertTrue(result.isPresent());
-        assertEquals(List.of("mars"), result.get().exploredPlanets());
+        assertEquals(List.of("mars"), result.get().getExploredPlanets());
         verify(userRepository).save(user);
     }
 
@@ -114,7 +115,7 @@ class UserServiceTest {
 
         Optional<User> result = userService.explorePlanet(uuid, "mars");
 
-        assertEquals(List.of("mars"), result.orElseThrow().exploredPlanets());
+        assertEquals(List.of("mars"), result.orElseThrow().getExploredPlanets());
     }
 
     @Test

@@ -9,7 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tbz.project.spaceproject.User;
 import tbz.project.spaceproject.service.UserService;
-import tbz.project.spaceproject.service.UsernameAlreadyExistsException;
+import tbz.project.spaceproject.Exception.UsernameAlreadyExistsException;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +32,7 @@ class UserControllerTest {
     private UserService userService;
 
     private static User alice(UUID id) {
-        return USer.builder()
+        return User.builder()
                 .id(id)
                 .username("Alice")
                 .exploredPlanets(List.of())

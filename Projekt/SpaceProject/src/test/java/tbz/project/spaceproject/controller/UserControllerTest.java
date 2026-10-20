@@ -130,4 +130,26 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users/abc"))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void exploresPlanetForAnExistingUser() throws Exception {
+        UUID id = UUID.randomUUID();
+        User explorer = User.builder()
+                .id(id)
+                .username("Alice")
+                .exploredPlanets(List.of("mars"))
+                .build();
+
+        when(userService.explorePlanet(id, "mars"))
+                .thenReturn(Optional.of(explorer));
+
+        mockMvc.perform(post("/api/users/{id}/explored-planets", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {"planetName": "mars"}
+                            """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.exploredPlanets", hasSize(1)))
+                .andExpect(jsonPath("$.exploredPlanets[0]").value("mars"));
+    }
 }

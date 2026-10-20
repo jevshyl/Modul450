@@ -79,5 +79,5 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 
 
 ---
-[](./assets/jococo1.png)
-[](./assets/jococo2.png)
+![JaCoCo Coverage Report](./assets/jococo1.png)
+![JaCoCo Package Coverage](./assets/jococo2.png)

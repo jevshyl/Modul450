@@ -13,6 +13,7 @@ import tbz.project.spaceproject.Planet;
 import tbz.project.spaceproject.PlanetAPIService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -130,6 +131,32 @@ class PlanetCatalogServiceTest {
 
         service.getPlanetById("mars");
         service.clearCache();
+        service.getPlanetById("mars");
+
+        verify(planetAPIService, times(2)).getPlanet("mars");
+    }
+
+    @Test
+    @DisplayName("an expired cache entry is reloaded from the upstream API")
+    void reloadsExpiredCacheEntries() throws Exception {
+        when(planetAPIService.getPlanet("mars")).thenReturn(mars());
+
+        // Prime the cache normally.
+        service.getPlanetById("mars");
+
+        // Swap in an entry created at the epoch so its TTL has already elapsed.
+        Class<?> cacheEntryType = Class.forName(
+                "tbz.project.spaceproject.service.PlanetCatalogService$CacheEntry");
+        var constructor = cacheEntryType.getDeclaredConstructor(Planet.class, long.class);
+        constructor.setAccessible(true);
+        Object expiredEntry = constructor.newInstance(mars(), 0L);
+
+        var cacheField = PlanetCatalogService.class.getDeclaredField("cache");
+        cacheField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> cache = (Map<String, Object>) cacheField.get(service);
+        cache.put("mars", expiredEntry);
+
         service.getPlanetById("mars");
 
         verify(planetAPIService, times(2)).getPlanet("mars");

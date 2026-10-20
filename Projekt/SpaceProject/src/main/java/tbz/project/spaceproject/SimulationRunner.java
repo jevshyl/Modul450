@@ -5,15 +5,21 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
+import java.util.function.IntConsumer;
 
 @Component
 @ConditionalOnProperty(name = "app.cli.enabled", havingValue = "true")
 public class SimulationRunner implements CommandLineRunner {
 
     private final Simulation simulation;
+    private IntConsumer exitHandler = System::exit;
 
     public SimulationRunner(Simulation simulation) {
         this.simulation = simulation;
+    }
+
+    void setExitHandler(IntConsumer exitHandler) {
+        this.exitHandler = exitHandler;
     }
 
     @Override
@@ -39,6 +45,6 @@ public class SimulationRunner implements CommandLineRunner {
         }
 
         System.out.println("Adios Amigo 👋");
-        System.exit(0);
+        exitHandler.accept(0);
     }
 }

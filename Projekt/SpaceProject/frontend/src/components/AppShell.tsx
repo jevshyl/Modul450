@@ -7,12 +7,14 @@ import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import PersonIcon from '@mui/icons-material/Person'
 import type { ReactNode } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 
 const NAV_ITEMS = [
-  { to: '/planets', label: 'Catalogue', icon: <GridViewIcon /> },
-  { to: '/simulate', label: 'Simulate', icon: <RocketLaunchIcon /> },
+    { to: '/planets', label: 'Catalogue', icon: <GridViewIcon /> },
+    { to: '/simulate', label: 'Simulate', icon: <RocketLaunchIcon /> },
+    { to: '/profile', label: 'Profile', icon: <PersonIcon /> },
 ]
 
 export function AppShell({ children }: { children: ReactNode }) {

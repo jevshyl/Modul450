@@ -8,6 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tbz.project.spaceproject.Exception.UsernameAlreadyExistsException;
 import tbz.project.spaceproject.User;
 import tbz.project.spaceproject.repository.UserRepository;
 
@@ -110,11 +111,11 @@ class UserServiceTest {
     void doesNotDuplicateAnExploredPlanet() {
         user.explorePlanet("mars");
         when(userRepository.findById(uuid)).thenReturn(Optional.of(user));
-        when(userRepository.save(user)).thenReturn(user);
 
         Optional<User> result = userService.explorePlanet(uuid, "mars");
 
         assertEquals(List.of("mars"), result.orElseThrow().getExploredPlanets());
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test

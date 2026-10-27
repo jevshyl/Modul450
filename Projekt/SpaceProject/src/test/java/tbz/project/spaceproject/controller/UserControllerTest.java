@@ -9,7 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tbz.project.spaceproject.User;
 import tbz.project.spaceproject.service.UserService;
-import tbz.project.spaceproject.service.UsernameAlreadyExistsException;
+import tbz.project.spaceproject.Exception.UsernameAlreadyExistsException;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +32,7 @@ class UserControllerTest {
     private UserService userService;
 
     private static User alice(UUID id) {
-        return USer.builder()
+        return User.builder()
                 .id(id)
                 .username("Alice")
                 .exploredPlanets(List.of())
@@ -129,5 +129,27 @@ class UserControllerTest {
     void returnsBadRequestForAnInvalidUuid() throws Exception {
         mockMvc.perform(get("/api/users/abc"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void exploresPlanetForAnExistingUser() throws Exception {
+        UUID id = UUID.randomUUID();
+        User explorer = User.builder()
+                .id(id)
+                .username("Alice")
+                .exploredPlanets(List.of("mars"))
+                .build();
+
+        when(userService.explorePlanet(id, "mars"))
+                .thenReturn(Optional.of(explorer));
+
+        mockMvc.perform(post("/api/users/{id}/explored-planets", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {"planetName": "mars"}
+                            """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.exploredPlanets", hasSize(1)))
+                .andExpect(jsonPath("$.exploredPlanets[0]").value("mars"));
     }
 }

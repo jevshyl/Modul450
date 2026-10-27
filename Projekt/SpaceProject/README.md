@@ -73,11 +73,30 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 | **CI‑Server** | GitHub Actions– führt `./gradlew test`, `npm test`, Playwright‑Tests |
 | **Test‑Datenbank** | PostgreSQL 15 in Docker‑Container, initialisiertes Schema aus `src/main/resources/schema.sql` |
 | **Browser‑Umgebung** | Chromium (Headless) für Playwright |
-| **Test‑Reporting** |jococo für test coverage |
-
-
-
+| **Test‑Reporting** |jococo unt Vitest für test coverage |
 
 ---
+## Backend Test Coverage:
+![JaCoCo Package Coverage](./assets/be-test-files.png)
+![JaCoCo Package Coverage](./assets/test-be-coverage.png)
 ![JaCoCo Coverage Report](./assets/jococo1.png)
 ![JaCoCo Package Coverage](./assets/jococo2.png)
+
+## Frontend Test Coverage:
+![JaCoCo Package Coverage](./assets/test-fr.png)
+![JaCoCo Package Coverage](./assets/coverfront.png)
+![JaCoCo Package Coverage](./assets/cov-fr1.png)
+![JaCoCo Package Coverage](./assets/cov-fr2.png)
+![JaCoCo Package Coverage](./assets/cov-fr3.png)
+
+## E2E Test :
+![ci-cd](./assets/playw.png)
+![ci-cd](./assets/playwright1.png)
+## TDD Test:
+
+
+## CI/CD:
+![ci-cd](./assets/workflow.png)
+## Code-Review
+![code review](./assets/code-rw1.png)
+![code review](./assets/code-rw2.png)

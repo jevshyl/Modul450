@@ -90,7 +90,8 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 ![JaCoCo Package Coverage](./assets/cov-fr3.png)
 
 ## E2E Test :
-
+![ci-cd](./assets/playw.png)
+![ci-cd](./assets/playwright1.png)
 ## TDD Test:
 
 

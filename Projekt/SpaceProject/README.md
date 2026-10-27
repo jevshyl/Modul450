@@ -55,23 +55,22 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 ---
 
 ##  Test Deliverables
-- **Testplan**
 - **Test Cases Specification** erwartetes Ergebnis, Priorität.
 - **Test Scripts** – JUnit‑Klassen, Playwright‑Tests.
-- **Test Reports** –JaCoCo‑Coverage‑Report.
-- **Final Test Summary Report** – Zusammenfassung aller Ergebnisse, Abweichungen, Freigabe‑Entscheidung.
+- **Test Reports** –JaCoCo‑Coverage‑Report.Vitest‑Coverage‑Report, Playwright‑Test‑Report.
+- **Final Test Summary Report** – Zusammenfassung aller Ergebnisse
 
 ---
 
 
 ##  Environmental Needs 
-| Umgebung | Beschreibung |
-|----------|--------------|
-| **Entwicklungs‑/Build‑Umgebung** | Windows 10, JDK 21, Node 20, Gradle 8, npm 10, Docker (für Testcontainers) |
-| **CI‑Server** | GitHub Actions– führt `./gradlew test`, `npm test`, Playwright‑Tests |
+| Umgebung | Beschreibung                                                                                  |
+|----------|-----------------------------------------------------------------------------------------------|
+| **Entwicklungs‑/Build‑Umgebung** | Windows 10, JDK 21, Node 20, Gradle 8, npm 10, Docker (für Testcontainers)                    |
+| **CI‑Server** | GitHub Actions– führt `./gradlew test`, `npm test`, Playwright‑Tests                          |
 | **Test‑Datenbank** | PostgreSQL 15 in Docker‑Container, initialisiertes Schema aus `src/main/resources/schema.sql` |
-| **Browser‑Umgebung** | Chromium (Headless) für Playwright |
-| **Test‑Reporting** |jococo unt Vitest für test coverage |
+| **Browser‑Umgebung** | Chromium (Headless) für Playwright                                                            |
+| **Test‑Reporting** | jococo und Vitest für test coverage und playwrigt für e2e test                                |
 
 ---
 ## Backend Test Coverage:

@@ -30,8 +30,6 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 
 ### Features NOT to be Tested
 - Third‑Party Services (z. B. externe Auth‑Provider) – werden durch Mock‑Stubs simuliert
-- Browser‑Kompatibilität jenseits von Chrome/Edge (kein Cross‑Browser‑Testing)
-- Infrastruktur‑Provisionierung (Terraform/Ansible) – wird von DevOps‑Team separat verifiziert
 - UI‑Design‑Pixel‑Perfektion (visuelles Layout) – wird manuell von UI‑Designer geprüft
 
 ---

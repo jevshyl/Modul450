@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import TouchAppIcon from '@mui/icons-material/TouchApp'
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
@@ -22,337 +23,421 @@ import { EmptyState, ErrorState, LoadingState } from '../components/StateViews'
 import { describeUnknown, formatGravity, formatMass, formatTemp } from '../theme/planetFormat'
 
 type Phase = 'select' | 'countdown' | 'launch' | 'arrival' | 'exploring' | 'complete'
+type SaveStatus = 'pending' | 'saved' | 'no-profile' | 'error'
+
+type StoredUser = {
+    id: string
+    username: string
+    exploredPlanets: string[]
+}
 
 const PHASES: Phase[] = ['select', 'countdown', 'launch', 'arrival', 'exploring', 'complete']
 
 const STEP_LABELS: Record<Phase, string> = {
-  select: 'Select',
-  countdown: 'Countdown',
-  launch: 'Blast off',
-  arrival: 'Arrival',
-  exploring: 'Exploration',
-  complete: 'Complete',
+    select: 'Select',
+    countdown: 'Countdown',
+    launch: 'Blast off',
+    arrival: 'Arrival',
+    exploring: 'Exploration',
+    complete: 'Complete',
 }
 
 const COUNTDOWN_FROM = 5
 
-export function SimulationPage() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const { data: destinations, loading: loadingDestinations, error: destinationsError, reload } =
-    useDestinations()
+const USERS_API = 'http://localhost:8080/api/users'
+const STORAGE_KEY = 'spacexplorer-user'
 
-  const [phase, setPhase] = useState<Phase>('select')
-  const [selected, setSelected] = useState<Planet | null>(null)
-  const [destination, setDestination] = useState<Destination | null>(null)
-  const [count, setCount] = useState(COUNTDOWN_FROM)
-  const [loadingPlanet, setLoadingPlanet] = useState(false)
-  const [planetError, setPlanetError] = useState<string | null>(null)
-  const [picked, setPicked] = useState(false)
-  const timers = useRef<number[]>([])
-
-  const clearTimers = useCallback(() => {
-    timers.current.forEach((id) => window.clearTimeout(id))
-    timers.current = []
-  }, [])
-
-  useEffect(() => clearTimers, [clearTimers])
-
-  const runCountdown = useCallback(() => {
-    const beat = (n: number) => {
-      if (n > 0) {
-        setCount(n)
-        timers.current.push(window.setTimeout(() => beat(n - 1), 850))
-        return
-      }
-
-      setPhase('launch')
-      timers.current.push(
-        window.setTimeout(() => {
-          setPhase('arrival')
-          timers.current.push(
-            window.setTimeout(() => {
-              setPhase('exploring')
-              timers.current.push(window.setTimeout(() => setPhase('complete'), 1400))
-            }, 1600),
-          )
-        }, 2200),
-      )
+/** Saves the visited planet to the backend profile of the stored explorer. */
+async function saveExploredPlanet(planetName: string): Promise<'saved' | 'no-profile'> {
+    let user: StoredUser | null = null
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY)
+        user = saved ? (JSON.parse(saved) as StoredUser) : null
+    } catch {
+        user = null
     }
-    beat(COUNTDOWN_FROM)
-  }, [])
+    if (!user) return 'no-profile'
 
-  const beginTrip = useCallback(
-    async (destination: Destination) => {
-      clearTimers()
-      setDestination(destination)
-      setSelected(null)
-      setPlanetError(null)
-      setLoadingPlanet(true)
-      setCount(COUNTDOWN_FROM)
-      setPhase('countdown')
+    const response = await fetch(`${USERS_API}/${user.id}/explored-planets`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planetName }),
+    })
 
-      try {
-        const planet = await planetApi.getPlanet(destination.planetId)
-        setSelected(planet)
-        setLoadingPlanet(false)
-        runCountdown()
-      } catch (cause) {
-        setLoadingPlanet(false)
-        setPlanetError(
-          cause instanceof ApiError ? cause.message : 'Could not load telemetry for that body.',
-        )
+    if (response.status === 404) {
+        // the backend does not know this user any more (e.g. in-memory DB was reset)
+        localStorage.removeItem(STORAGE_KEY)
+        return 'no-profile'
+    }
+    if (!response.ok) {
+        throw new Error(`Could not save planet (${response.status}).`)
+    }
+
+    const updated = (await response.json()) as StoredUser
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+    return 'saved'
+}
+
+export function SimulationPage() {
+    const [searchParams, setSearchParams] = useSearchParams()
+    const { data: destinations, loading: loadingDestinations, error: destinationsError, reload } =
+        useDestinations()
+
+    const [phase, setPhase] = useState<Phase>('select')
+    const [selected, setSelected] = useState<Planet | null>(null)
+    const [destination, setDestination] = useState<Destination | null>(null)
+    const [count, setCount] = useState(COUNTDOWN_FROM)
+    const [loadingPlanet, setLoadingPlanet] = useState(false)
+    const [planetError, setPlanetError] = useState<string | null>(null)
+    const [picked, setPicked] = useState(false)
+    const [saveStatus, setSaveStatus] = useState<SaveStatus>('pending')
+    const timers = useRef<number[]>([])
+    const savedFor = useRef<string | null>(null)
+
+    const clearTimers = useCallback(() => {
+        timers.current.forEach((id) => window.clearTimeout(id))
+        timers.current = []
+    }, [])
+
+    useEffect(() => clearTimers, [clearTimers])
+
+    // Save the visited planet once the trip is complete (explorable or not).
+    useEffect(() => {
+        if (phase !== 'complete' || !selected) return
+        if (savedFor.current === selected.routeId) return
+
+        savedFor.current = selected.routeId
+        saveExploredPlanet(selected.name)
+            .then(setSaveStatus)
+            .catch(() => setSaveStatus('error'))
+    }, [phase, selected])
+
+    const runCountdown = useCallback(() => {
+        const beat = (n: number) => {
+            if (n > 0) {
+                setCount(n)
+                timers.current.push(window.setTimeout(() => beat(n - 1), 850))
+                return
+            }
+
+            setPhase('launch')
+            timers.current.push(
+                window.setTimeout(() => {
+                    setPhase('arrival')
+                    timers.current.push(
+                        window.setTimeout(() => {
+                            setPhase('exploring')
+                            timers.current.push(window.setTimeout(() => setPhase('complete'), 1400))
+                        }, 1600),
+                    )
+                }, 2200),
+            )
+        }
+        beat(COUNTDOWN_FROM)
+    }, [])
+
+    const beginTrip = useCallback(
+        async (destination: Destination) => {
+            clearTimers()
+            setDestination(destination)
+            setSelected(null)
+            setPlanetError(null)
+            setLoadingPlanet(true)
+            setCount(COUNTDOWN_FROM)
+            setSaveStatus('pending')
+            savedFor.current = null
+            setPhase('countdown')
+
+            try {
+                const planet = await planetApi.getPlanet(destination.planetId)
+                setSelected(planet)
+                setLoadingPlanet(false)
+                runCountdown()
+            } catch (cause) {
+                setLoadingPlanet(false)
+                setPlanetError(
+                    cause instanceof ApiError ? cause.message : 'Could not load telemetry for that body.',
+                )
+                setPhase('select')
+            }
+        },
+        [clearTimers, runCountdown],
+    )
+
+    const targetDestination = searchParams.get('destination')
+
+    useEffect(() => {
+        if (!targetDestination || picked || !destinations) return
+
+        const match = destinations.find((d) => d.planetId === targetDestination.toLowerCase())
+        if (!match) return
+
+        setPicked(true)
+        void beginTrip(match)
+    }, [beginTrip, destinations, picked, targetDestination])
+
+    const reset = () => {
+        clearTimers()
         setPhase('select')
-      }
-    },
-    [clearTimers, runCountdown],
-  )
+        setSelected(null)
+        setDestination(null)
+        setCount(COUNTDOWN_FROM)
+        setPicked(false)
+        setSaveStatus('pending')
+        savedFor.current = null
+        setSearchParams({})
+    }
 
-  const targetDestination = searchParams.get('destination')
+    if (loadingDestinations) return <LoadingState label="Loading flight plan…" />
+    if (destinationsError) return <ErrorState message={destinationsError} onRetry={reload} />
+    if ((destinations ?? []).length === 0) {
+        return <EmptyState title="No destinations available" hint="The flight plan is empty." />
+    }
 
-  useEffect(() => {
-    if (!targetDestination || picked || !destinations) return
+    const activeStep = Math.max(0, PHASES.indexOf(phase))
+    const launchProgress = Math.min(100, (activeStep / (PHASES.length - 1)) * 100)
 
-    const match = destinations.find((d) => d.planetId === targetDestination.toLowerCase())
-    if (!match) return
+    return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            <Paper sx={{ p: { xs: 2.5, md: 3 } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                    <RocketLaunchIcon sx={{ color: 'primary.main' }} />
+                    <Typography variant="h1" component="h1">
+                        Trip simulation
+                    </Typography>
+                </Box>
+                <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 640 }}>
+                    Pick a destination from the flight plan and run the full launch sequence — countdown,
+                    blast-off, arrival and a surface exploration attempt.
+                </Typography>
+            </Paper>
 
-    setPicked(true)
-    void beginTrip(match)
-  }, [beginTrip, destinations, picked, targetDestination])
+            <Paper sx={{ p: { xs: 2.5, md: 3 } }}>
+                <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 2 }}>
+                    {PHASES.map((step) => (
+                        <Step key={step}>
+                            <StepLabel>{STEP_LABELS[step]}</StepLabel>
+                        </Step>
+                    ))}
+                </Stepper>
+                <LinearProgress
+                    variant="determinate"
+                    value={launchProgress}
+                    sx={{ height: 6, borderRadius: 999 }}
+                />
+            </Paper>
 
-  const reset = () => {
-    clearTimers()
-    setPhase('select')
-    setSelected(null)
-    setDestination(null)
-    setCount(COUNTDOWN_FROM)
-    setPicked(false)
-    setSearchParams({})
-  }
+            {planetError ? (
+                <ErrorState message={planetError} onRetry={() => destination && beginTrip(destination)} />
+            ) : null}
 
-  if (loadingDestinations) return <LoadingState label="Loading flight plan…" />
-  if (destinationsError) return <ErrorState message={destinationsError} onRetry={reload} />
-  if ((destinations ?? []).length === 0) {
-    return <EmptyState title="No destinations available" hint="The flight plan is empty." />
-  }
-
-  const activeStep = Math.max(0, PHASES.indexOf(phase))
-  const launchProgress = Math.min(100, (activeStep / (PHASES.length - 1)) * 100)
-
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-      <Paper sx={{ p: { xs: 2.5, md: 3 } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <RocketLaunchIcon sx={{ color: 'primary.main' }} />
-          <Typography variant="h1" component="h1">
-            Trip simulation
-          </Typography>
+            {phase === 'select' ? (
+                <Grid container spacing={2}>
+                    {(destinations ?? []).map((dest) => (
+                        <Grid key={dest.planetId} size={{ xs: 12, sm: 6, md: 4 }}>
+                            <DestinationCard
+                                destination={dest}
+                                busy={loadingPlanet && destination?.planetId === dest.planetId}
+                                onLaunch={() => {
+                                    setPicked(true)
+                                    void beginTrip(dest)
+                                }}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
+            ) : (
+                <Paper sx={{ p: { xs: 3, md: 5 }, textAlign: 'center', minHeight: 380 }}>
+                    <PhaseDisplay
+                        phase={phase}
+                        count={count}
+                        planet={selected}
+                        saveStatus={saveStatus}
+                        onReset={reset}
+                    />
+                </Paper>
+            )}
         </Box>
-        <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 640 }}>
-          Pick a destination from the flight plan and run the full launch sequence — countdown,
-          blast-off, arrival and a surface exploration attempt.
-        </Typography>
-      </Paper>
-
-      <Paper sx={{ p: { xs: 2.5, md: 3 } }}>
-        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 2 }}>
-          {PHASES.map((step) => (
-            <Step key={step}>
-              <StepLabel>{STEP_LABELS[step]}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <LinearProgress
-          variant="determinate"
-          value={launchProgress}
-          sx={{ height: 6, borderRadius: 999 }}
-        />
-      </Paper>
-
-      {planetError ? (
-        <ErrorState message={planetError} onRetry={() => destination && beginTrip(destination)} />
-      ) : null}
-
-      {phase === 'select' ? (
-        <Grid container spacing={2}>
-          {(destinations ?? []).map((dest) => (
-            <Grid key={dest.planetId} size={{ xs: 12, sm: 6, md: 4 }}>
-              <DestinationCard
-                destination={dest}
-                busy={loadingPlanet && destination?.planetId === dest.planetId}
-                onLaunch={() => {
-                  setPicked(true)
-                  void beginTrip(dest)
-                }}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Paper sx={{ p: { xs: 3, md: 5 }, textAlign: 'center', minHeight: 380 }}>
-          <PhaseDisplay
-            phase={phase}
-            count={count}
-            planet={selected}
-            onReset={reset}
-          />
-        </Paper>
-      )}
-    </Box>
-  )
+    )
 }
 
 function DestinationCard({
-  destination,
-  busy,
-  onLaunch,
-}: {
-  destination: Destination
-  busy: boolean
-  onLaunch: () => void
+                             destination,
+                             busy,
+                             onLaunch,
+                         }: {
+    destination: Destination
+    busy: boolean
+    onLaunch: () => void
 }) {
-  return (
-    <Paper
-      sx={{
-        p: 2.5,
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 1.5,
-        transition: 'transform .18s ease, border-color .18s ease',
-        '&:hover': { transform: 'translateY(-4px)', borderColor: 'primary.main' },
-      }}
-    >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <PlanetOrb planetId={destination.planetId} size={62} />
-        <Box sx={{ minWidth: 0 }}>
-          <Typography variant="h4">{destination.name}</Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Shuttle {destination.aircraft}
-          </Typography>
-        </Box>
-      </Box>
-      <Box sx={{ flex: 1 }} />
-      <Button
-        fullWidth
-        variant="contained"
-        startIcon={busy ? undefined : <FlightTakeoffIcon />}
-        disabled={busy}
-        onClick={onLaunch}
-      >
-        {busy ? 'Preparing…' : `Fly to ${destination.name}`}
-      </Button>
-    </Paper>
-  )
+    return (
+        <Paper
+            sx={{
+                p: 2.5,
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1.5,
+                transition: 'transform .18s ease, border-color .18s ease',
+                '&:hover': { transform: 'translateY(-4px)', borderColor: 'primary.main' },
+            }}
+        >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <PlanetOrb planetId={destination.planetId} size={62} />
+                <Box sx={{ minWidth: 0 }}>
+                    <Typography variant="h4">{destination.name}</Typography>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                        Shuttle {destination.aircraft}
+                    </Typography>
+                </Box>
+            </Box>
+            <Box sx={{ flex: 1 }} />
+            <Button
+                fullWidth
+                variant="contained"
+                startIcon={busy ? undefined : <FlightTakeoffIcon />}
+                disabled={busy}
+                onClick={onLaunch}
+            >
+                {busy ? 'Preparing…' : `Fly to ${destination.name}`}
+            </Button>
+        </Paper>
+    )
 }
 
 function PhaseDisplay({
-  phase,
-  count,
-  planet,
-  onReset,
-}: {
-  phase: Phase
-  count: number
-  planet: Planet | null
-  onReset: () => void
+                          phase,
+                          count,
+                          planet,
+                          saveStatus,
+                          onReset,
+                      }: {
+    phase: Phase
+    count: number
+    planet: Planet | null
+    saveStatus: SaveStatus
+    onReset: () => void
 }) {
-  if (!planet && phase !== 'countdown') {
-    return <LoadingState label="Fetching destination telemetry…" />
-  }
+    if (!planet && phase !== 'countdown') {
+        return <LoadingState label="Fetching destination telemetry…" />
+    }
 
-  if (phase === 'countdown') {
-    return (
-      <Box sx={{ py: 4 }}>
-        <Typography variant="h2" sx={{ mb: 1 }}>
-          {count > 0 ? count : 'Liftoff'}
-        </Typography>
-        <Typography variant="h4" sx={{ color: 'text.secondary', fontWeight: 400 }}>
-          {planet ? `Preparing shuttle for ${planet.name}` : 'Preparing shuttle…'}
-        </Typography>
-      </Box>
-    )
-  }
+    if (phase === 'countdown') {
+        return (
+            <Box sx={{ py: 4 }}>
+                <Typography variant="h2" sx={{ mb: 1 }}>
+                    {count > 0 ? count : 'Liftoff'}
+                </Typography>
+                <Typography variant="h4" sx={{ color: 'text.secondary', fontWeight: 400 }}>
+                    {planet ? `Preparing shuttle for ${planet.name}` : 'Preparing shuttle…'}
+                </Typography>
+            </Box>
+        )
+    }
 
-  if (phase === 'launch') {
-    return (
-      <Box sx={{ py: 4 }}>
-        <RocketLaunchIcon sx={{ fontSize: 64, color: 'primary.main', mb: 1 }} />
-        <Typography variant="h2">Blast off!</Typography>
-        <Typography variant="h4" sx={{ color: 'text.secondary', fontWeight: 400 }}>
-          Engines at full thrust
-        </Typography>
-      </Box>
-    )
-  }
+    if (phase === 'launch') {
+        return (
+            <Box sx={{ py: 4 }}>
+                <RocketLaunchIcon sx={{ fontSize: 64, color: 'primary.main', mb: 1 }} />
+                <Typography variant="h2">Blast off!</Typography>
+                <Typography variant="h4" sx={{ color: 'text.secondary', fontWeight: 400 }}>
+                    Engines at full thrust
+                </Typography>
+            </Box>
+        )
+    }
 
-  if (phase === 'arrival' && planet) {
-    return (
-      <Box sx={{ py: 2 }}>
-        <PlanetOrb planetId={planet.routeId} size={132} glowing sx={{ mx: 'auto', mb: 2 }} />
-        <Typography variant="h2">Arrived at {planet.name}</Typography>
-        <Typography variant="h4" sx={{ color: 'text.secondary', fontWeight: 400 }}>
-          {formatTemp(planet.temperatureCelsius)} · {formatGravity(planet.gravity)} ·{' '}
-          {formatMass(planet.mass)}
-        </Typography>
-      </Box>
-    )
-  }
+    if (phase === 'arrival' && planet) {
+        return (
+            <Box sx={{ py: 2 }}>
+                <PlanetOrb planetId={planet.routeId} size={132} glowing sx={{ mx: 'auto', mb: 2 }} />
+                <Typography variant="h2">Arrived at {planet.name}</Typography>
+                <Typography variant="h4" sx={{ color: 'text.secondary', fontWeight: 400 }}>
+                    {formatTemp(planet.temperatureCelsius)} · {formatGravity(planet.gravity)} ·{' '}
+                    {formatMass(planet.mass)}
+                </Typography>
+            </Box>
+        )
+    }
 
-  if (phase === 'exploring' && planet) {
-    return (
-      <Box sx={{ py: 2 }}>
-        <TouchAppIcon sx={{ fontSize: 58, color: 'secondary.main', mb: 1 }} />
-        <Typography variant="h2">Deploying survey drone…</Typography>
-        <Typography variant="h4" sx={{ color: 'text.secondary', fontWeight: 400 }}>
-          Reading surface conditions
-        </Typography>
-      </Box>
-    )
-  }
+    if (phase === 'exploring' && planet) {
+        return (
+            <Box sx={{ py: 2 }}>
+                <TouchAppIcon sx={{ fontSize: 58, color: 'secondary.main', mb: 1 }} />
+                <Typography variant="h2">Deploying survey drone…</Typography>
+                <Typography variant="h4" sx={{ color: 'text.secondary', fontWeight: 400 }}>
+                    Reading surface conditions
+                </Typography>
+            </Box>
+        )
+    }
 
-  if (phase === 'complete' && planet) {
-    return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: 2 }}>
-        <PlanetOrb planetId={planet.routeId} size={132} glowing />
-        <ExplorabilityBadge
-          explorable={planet.explorable}
-          reason={planet.notExplorableReason}
-          size="medium"
-        />
-        <Typography variant="h2" sx={{ mt: 1 }}>
-          {planet.explorable
-            ? `Exploring planet ${planet.name}!`
-            : `Cannot explore ${planet.name}`}
-        </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 520 }}>
-          {planet.explorable
-            ? 'Conditions are within human tolerance. Welcome to the surface.'
-            : planet.notExplorableReason}
-        </Typography>
+    if (phase === 'complete' && planet) {
+        return (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: 2 }}>
+                <PlanetOrb planetId={planet.routeId} size={132} glowing />
+                <ExplorabilityBadge
+                    explorable={planet.explorable}
+                    reason={planet.notExplorableReason}
+                    size="medium"
+                />
+                <Typography variant="h2" sx={{ mt: 1 }}>
+                    {planet.explorable
+                        ? `Exploring planet ${planet.name}!`
+                        : `Cannot explore ${planet.name}`}
+                </Typography>
+                <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 520 }}>
+                    {planet.explorable
+                        ? 'Conditions are within human tolerance. Welcome to the surface.'
+                        : planet.notExplorableReason}
+                </Typography>
 
-        <StackChips planet={planet} />
+                <StackChips planet={planet} />
 
-        <Box sx={{ display: 'flex', gap: 1.5, mt: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Button variant="contained" onClick={onReset}>
-            New destination
-          </Button>
-        </Box>
-      </Box>
-    )
-  }
+                <SaveNotice status={saveStatus} />
 
-  return <LoadingState />
+                <Box sx={{ display: 'flex', gap: 1.5, mt: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <Button variant="contained" onClick={onReset}>
+                        New destination
+                    </Button>
+                </Box>
+            </Box>
+        )
+    }
+
+    return <LoadingState />
+}
+
+function SaveNotice({ status }: { status: SaveStatus }) {
+    if (status === 'pending') {
+        return (
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                Saving to your explorer profile…
+            </Typography>
+        )
+    }
+    if (status === 'saved') {
+        return <Alert severity="success">Planet saved to your explorer profile.</Alert>
+    }
+    if (status === 'no-profile') {
+        return (
+            <Alert severity="info">
+                Create an explorer profile to keep track of the planets you have visited.
+            </Alert>
+        )
+    }
+    return <Alert severity="warning">Could not save this visit to your profile.</Alert>
 }
 
 function StackChips({ planet }: { planet: Planet }) {
-  return (
-    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
-      <Chip label={`Shuttle ${describeUnknown(planet.aircraft, '—')}`} size="small" variant="outlined" />
-      <Chip
-        label={`Discovered by ${describeUnknown(planet.discoveredBy)}`}
-        size="small"
-        variant="outlined"
-      />
-    </Box>
-  )
+    return (
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Chip label={`Shuttle ${describeUnknown(planet.aircraft, '—')}`} size="small" variant="outlined" />
+            <Chip
+                label={`Discovered by ${describeUnknown(planet.discoveredBy)}`}
+                size="small"
+                variant="outlined"
+            />
+        </Box>
+    )
 }

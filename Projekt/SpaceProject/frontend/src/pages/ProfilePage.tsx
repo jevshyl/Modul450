@@ -2,6 +2,7 @@ import {useEffect, useState, type FormEvent} from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import ExploreIcon from '@mui/icons-material/Explore'
+import PublicIcon from '@mui/icons-material/Public'
 import {
     Alert,
     Avatar,
@@ -9,6 +10,7 @@ import {
     Button,
     Card,
     CardContent,
+    Chip,
     CircularProgress,
     Divider,
     Stack,
@@ -38,6 +40,8 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
+    // On load, check that the saved user still exists on the backend
+    // (the in-memory H2 database is wiped on every restart).
     useEffect(() => {
         if (!user) return
 
@@ -114,6 +118,8 @@ export default function ProfilePage() {
         setError('')
     }
 
+    const exploredPlanets = user?.exploredPlanets ?? []
+
     return (
         <Box sx={{maxWidth: 760, mx: 'auto'}}>
             <Stack spacing={1} sx={{mb: 4}}>
@@ -189,21 +195,42 @@ export default function ProfilePage() {
                                 </Typography>
                             </Box>
 
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                sx={{alignItems: 'center'}}
-                            >
-                                <ExploreIcon color="primary" fontSize="large"/>
-                                <Box>
-                                    <Typography>
-                                        {user.exploredPlanets?.length ?? 0} explored planets
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Your discoveries will appear here as you explore.
-                                    </Typography>
-                                </Box>
-                            </Stack>
+                            <Box>
+                                <Stack
+                                    direction="row"
+                                    spacing={1.5}
+                                    sx={{alignItems: 'center', mb: 2}}
+                                >
+                                    <ExploreIcon color="primary" fontSize="large"/>
+                                    <Box>
+                                        <Typography sx={{fontWeight: 700}}>
+                                            Explored planets
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {exploredPlanets.length === 0
+                                                ? 'Your discoveries will appear here as you explore.'
+                                                : `${exploredPlanets.length} ${
+                                                    exploredPlanets.length === 1 ? 'planet' : 'planets'
+                                                } visited`}
+                                        </Typography>
+                                    </Box>
+                                </Stack>
+
+                                {exploredPlanets.length > 0 && (
+                                    <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1}}>
+                                        {exploredPlanets.map((planet) => (
+                                            <Chip
+                                                key={planet}
+                                                icon={<PublicIcon/>}
+                                                label={planet}
+                                                color="primary"
+                                                variant="outlined"
+                                                sx={{fontWeight: 600, textTransform: 'capitalize'}}
+                                            />
+                                        ))}
+                                    </Box>
+                                )}
+                            </Box>
 
                             <Divider/>
 

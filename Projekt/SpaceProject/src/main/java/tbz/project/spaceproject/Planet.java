@@ -2,10 +2,10 @@ package tbz.project.spaceproject;
 
 public class Planet extends SpaceObject implements Explorable {
 
-    private static final double MIN_EXPLORABLE_TEMP = 100;
-    private static final double MAX_EXPLORABLE_SUIT = 500;
-    private static final double MIN_EXPLORABLE_GRAVITY = 0.1;
-    private static final double MAX_EXPLORABLE_GRAVITY = 3.0;
+    private static final double MIN_EXPLORABLE_TEMP = 10;
+    private static final double MAX_EXPLORABLE_SUIT = 1000;
+    private static final double MIN_EXPLORABLE_GRAVITY = 0.01;
+    private static final double MAX_EXPLORABLE_GRAVITY = 30.0;
 
     private static final double KELVIN_TO_CELSIUS = 273.15;
 

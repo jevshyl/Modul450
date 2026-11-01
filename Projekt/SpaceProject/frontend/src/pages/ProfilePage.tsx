@@ -1,4 +1,4 @@
-import {useState, type FormEvent} from 'react'
+import {useEffect, useState, type FormEvent} from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import ExploreIcon from '@mui/icons-material/Explore'
@@ -37,6 +37,28 @@ export default function ProfilePage() {
     })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+
+    useEffect(() => {
+        if (!user) return
+
+        fetch(`${API_URL}/${user.id}`)
+            .then(async (response) => {
+                if (response.status === 404) {
+                    localStorage.removeItem(STORAGE_KEY)
+                    setUser(null)
+                    return
+                }
+                if (!response.ok) return
+
+                const fresh = await response.json() as User
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh))
+                setUser(fresh)
+            })
+            .catch(() => {
+                // backend unreachable: keep showing the saved profile
+            })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     async function createUser(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -158,7 +180,7 @@ export default function ProfilePage() {
                             <Box>
                                 <Typography
                                     variant="caption"
-                                    sx={{color: 'text.secondar', display: "block"}}
+                                    sx={{color: 'text.secondary', display: 'block'}}
                                 >
                                     EXPLORER ID
                                 </Typography>

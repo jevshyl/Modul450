@@ -1,5 +1,5 @@
-import {useEffect, useState, type FormEvent} from 'react'
 import PersonIcon from '@mui/icons-material/Person'
+import {useEffect, useState, type FormEvent} from 'react'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import ExploreIcon from '@mui/icons-material/Explore'
 import PublicIcon from '@mui/icons-material/Public'

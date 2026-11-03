@@ -29,7 +29,6 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 - UI‑Flows: Auflistung, Detail‑Ansicht, Simulation starten
 
 ### Features NOT to be Tested
-- Third‑Party Services (z. B. externe Auth‑Provider) – werden durch Mock‑Stubs simuliert
 - UI‑Design‑Pixel‑Perfektion (visuelles Layout) – wird manuell von UI‑Designer geprüft
 
 ---
@@ -64,14 +63,33 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 
 
 ##  Environmental Needs 
-| Umgebung | Beschreibung                                                                                  |
-|----------|-----------------------------------------------------------------------------------------------|
-| **Entwicklungs‑/Build‑Umgebung** | Windows 10, JDK 21, Node 20, Gradle 8, npm 10, Docker (für Testcontainers)                    |
-| **CI‑Server** | GitHub Actions– führt `./gradlew test`, `npm test`, Playwright‑Tests                          |
-| **Test‑Datenbank** | PostgreSQL 15 in Docker‑Container, initialisiertes Schema aus `src/main/resources/schema.sql` |
-| **Browser‑Umgebung** | Chromium (Headless) für Playwright                                                            |
-| **Test‑Reporting** | jococo und Vitest für test coverage und playwrigt für e2e test                                |
+| Umgebung | Beschreibung                                                                            |
+|----------|-----------------------------------------------------------------------------------------|
+| **Entwicklungs‑/Build‑Umgebung** | Windows 11, JDK 21, Node 24, Gradle , npm 11                                            |
+| **CI‑Server** | GitHub Actions– führt `./gradlew test`, `npm test`, Playwright‑Tests                    |
+| **Test‑Datenbank** | PostgreSQL 15 in Docker‑Container, initialisiertes Schema aus `data/spaceproject.mv.db` |
+| **Browser‑Umgebung** | Chromium (Headless) für Playwright                                                      |
+| **Test‑Reporting** | jococo und Vitest für test coverage und playwrigt für e2e test                          |
 
+
+## KI-Nutzung im Projekt
+- Implementierung von Frontend
+- Unit-tests von Conttroller und Service
+- setup vitest test und 
+- 
+
+## Test run:
+### Backend:
+```
+build/reports/jacoco/index.html
+```
+### Frontend:
+```
+npx vitest run --coverage
+/coverage/index.html
+npx playwright test --headed
+npx playwright show-report
+```
 ---
 ## Backend Test Coverage:
 ![JaCoCo Package Coverage](./assets/be-test-files.png)
@@ -80,20 +98,19 @@ Das **SpaceProject** ist ein Full‑Stack‑System bestehend aus einem Spring‑
 ![JaCoCo Package Coverage](./assets/jococo2.png)
 
 ## Frontend Test Coverage:
-![JaCoCo Package Coverage](./assets/test-fr.png)
-![JaCoCo Package Coverage](./assets/coverfront.png)
-![JaCoCo Package Coverage](./assets/cov-fr1.png)
-![JaCoCo Package Coverage](./assets/cov-fr2.png)
-![JaCoCo Package Coverage](./assets/cov-fr3.png)
+![FrontendCoverage](./assets/test-fr.png)
+![FrontendCoverage](./assets/coverfront.png)
+![FrontendCoverage](./assets/cov-fr1.png)
+![FrontendCoverage](./assets/cov-fr2.png)
+![FroontendCoverage](./assets/cov-fr3.png)
 
 ## E2E Test :
-![ci-cd](./assets/playw.png)
-![ci-cd](./assets/playwright1.png)
-## TDD Test:
-
+![E2E](./assets/playw.png)
+![E2E](./assets/playwright1.png)
 
 ## CI/CD:
 ![ci-cd](./assets/workflow.png)
 ## Code-Review
 ![code review](./assets/code-rw1.png)
 ![code review](./assets/code-rw2.png)
+## TDD Test:

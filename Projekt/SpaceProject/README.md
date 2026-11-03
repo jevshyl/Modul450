@@ -114,3 +114,7 @@ npx playwright show-report
 ![code review](./assets/code-rw1.png)
 ![code review](./assets/code-rw2.png)
 ## TDD Test:
+
+Die Backend Features wurden mit dem TDD Prinzip implementiert. Dafür haben wir zuerst die Unit Tests geschrieben und danach die eigentlichen Features implementiert. 
+
+
